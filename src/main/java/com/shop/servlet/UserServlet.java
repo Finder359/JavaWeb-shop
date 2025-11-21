@@ -45,6 +45,10 @@ public class UserServlet extends HttpServlet {
             }
         }
 
+        if ("add".equals(op)){
+                doAdd(request,response);
+        }
+
 
     }
 
@@ -85,6 +89,22 @@ public class UserServlet extends HttpServlet {
             request.getRequestDispatcher("ListUser.jsp").forward(request,response);
         } catch (ServletException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public  void doAdd(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String username=request.getParameter("username");
+        String password=request.getParameter("password");
+        User user=new User();
+        user.setUsername(username);
+        user.setPassword(password);
+
+        UserDao userDao = new UserDaoImpl();
+        int n=userDao.add(user);
+        if(n>0){
+            response.sendRedirect("success.jsp");
+        }else {
+            response.sendRedirect("error.jsp");
         }
     }
 }

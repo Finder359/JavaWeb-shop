@@ -67,4 +67,24 @@ public class UserDaoImpl implements UserDao {
         }
         return users;
     }
+
+    @Override
+    public int add(User user) {
+        int n=0;
+        conn = DBUtil.getConn();
+
+        try {
+            String sql="insert into admin_info(name,pwd) values(?,?)";
+            ps=conn.prepareStatement(sql);
+            ps.setString(1,user.getUsername());
+            ps.setString(2,user.getPassword());
+            n=ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }finally {
+            DBUtil.close(ps,conn);
+        }
+
+        return n;
+    }
 }
