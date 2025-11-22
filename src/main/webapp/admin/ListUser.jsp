@@ -21,12 +21,12 @@
     <script src="js/pintuer.js"></script>
 </head>
 <body>
-<form method="post" action="UserServlet?op=batchDelete" id="listform">
+<form method="post" action="UserServlet" id="listform">
     <div class="panel admin-panel">
         <div class="panel-head"><strong class="icon-reorder"> 内容列表</strong> <a href="" style="float:right; display:none;">添加字段</a></div>
         <div class="padding border-bottom">
             <ul class="search" style="padding-left:10px;">
-                <li> <a class="button border-main icon-plus-square-o" href="add.html"> 添加内容</a> </li>
+                <li> <a class="button border-main icon-plus-square-o" href="addUser.jsp"> 添加内容</a> </li>
                 <li>搜索：</li>
                 <li>首页
                     <select name="s_ishome" class="input" onchange="changesearch()" style="width:60px; line-height:17px; display:inline-block">
@@ -96,7 +96,7 @@
                 <tr>
                     <td style="text-align:left; padding:19px 0;padding-left:20px;"><input type="checkbox" id="checkall"/>
                         全选 </td>
-                    <td colspan="7" style="text-align:left;padding-left:20px;"><a href="javascript:void(0)" class="button border-red icon-trash-o" style="padding:5px 15px;" onclick="DelSelect()"> 删除</a> <a href="javascript:void(0)" style="padding:5px 15px; margin:0 10px;" class="button border-blue icon-edit" onclick="sorts()"> 排序</a> 操作：
+                    <td colspan="7" style="text-align:left;padding-left:20px;"><a href="javascript:void(0)" class="button border-red icon-trash-o" style="padding:5px 15px;" onclick="submitOp('batchDelete', '您确认要删除选中的内容吗？')"> 删除</a> <a href="javascript:void(0)" style="padding:5px 15px; margin:0 10px;" class="button border-blue icon-edit" onclick="sorts()"> 排序</a> 操作：
                         <select name="ishome" style="padding:5px 15px; border:1px solid #ddd;" onchange="changeishome(this)">
                             <option value="">首页</option>
                             <option value="1">是</option>
@@ -131,8 +131,48 @@
                         </select></td>
                 </tr>
                 <tr>
-                    <td colspan="8"><div class="pagelist"> <a href="">上一页</a> <span class="current">1</span><a href="">2</a><a href="">3</a><a href="">下一页</a><a href="">尾页</a> </div></td>
+                    <td colspan="8">
+                        <div class="pagelist">
+
+                            <% int current = (int) request.getAttribute("currentPage");
+                                int total = (int) request.getAttribute("pageCount");
+                            %>
+
+                            <!-- 上一页 -->
+                            <%
+                                if(current > 1){
+                            %>
+                            <a href="UserServlet?op=queryAll&page=<%=current-1%>">上一页</a>
+                            <% } else { %>
+                            <span class="disabled">上一页</span>
+                            <% } %>
+
+                            <!-- 中间页码 -->
+                            <%
+                                for(int i = 1; i <= total; i++){
+                                    if(i == current){
+                            %>
+                            <span class="current"><%=i%></span>
+                            <%  } else { %>
+                            <a href="UserServlet?op=queryAll&page=<%=i%>"><%=i%></a>
+                            <%
+                                    }
+                                }
+                            %>
+
+                            <!-- 下一页 -->
+                            <%
+                                if(current < total){
+                            %>
+                            <a href="UserServlet?op=queryAll&page=<%=current+1%>">下一页</a>
+                            <% } else { %>
+                            <span class="disabled">下一页</span>
+                            <% } %>
+
+                        </div>
+                    </td>
                 </tr>
+
         </table>
     </div>
 </form>
@@ -182,6 +222,33 @@
             return false;
         }
     }
+
+    /**
+     * 通用批量操作函数
+     * @param op  后端使用的 op 参数，如 batchDelete / sort / top
+     * @param confirmMsg   可选，只有删除才会传这个参数
+     */
+    function submitOp(op, confirmMsg){
+
+        // 是否选择了复选框
+        if($("input[name='id[]']:checked").length == 0){
+            alert("请选择要操作的内容！");
+            return false;
+        }
+
+        //  如果需要确认（比如删除），才弹窗
+        if(confirmMsg){
+            if(!confirm(confirmMsg)){
+                return false;
+            }
+        }
+
+        // 提交到指定的操作
+        $("#listform").attr("action", "/admin/UserServlet?op=" + op);
+        $("#listform").submit();
+    }
+
+
 
     //批量排序
     function sorts(){

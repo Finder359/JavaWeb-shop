@@ -96,18 +96,28 @@ public class UserServlet extends HttpServlet {
         }
     }
 
-    public void  doQueryAll(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+    public void doQueryAll(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
         UserDao userDao = new UserDaoImpl();
-        ArrayList<User> users = userDao.queryAll();
 
+        // ① 获取当前页码
+        String page = request.getParameter("page");
+        int currentPage = (page == null ? 1 : Integer.parseInt(page));
+
+        // ② 查询分页数据
+        ArrayList<User> users = userDao.queryPage(currentPage);
+
+        // ③ 查询总页数
+        int pageCount = userDao.getPageCount();
+
+        // ④ 回传 JSP
         request.setAttribute("users", users);
+        request.setAttribute("currentPage", currentPage);
+        request.setAttribute("pageCount", pageCount);
 
-        try {
-            request.getRequestDispatcher("ListUser.jsp").forward(request,response);
-        } catch (ServletException e) {
-            throw new RuntimeException(e);
-        }
+        request.getRequestDispatcher("ListUser.jsp").forward(request, response);
     }
+
 
     public  void doAdd(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.setCharacterEncoding("UTF-8");
@@ -205,6 +215,8 @@ public class UserServlet extends HttpServlet {
             response.sendRedirect("error.jsp");
         }
     }
+
+
 
 
 
