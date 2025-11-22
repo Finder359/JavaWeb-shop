@@ -53,6 +53,11 @@ public class UserServlet extends HttpServlet {
             doDelete(request,response);
         }
 
+        if("batchDelete".equals(op)){
+            doBatchDelete(request, response);
+        }
+
+
 
     }
 
@@ -128,4 +133,33 @@ public class UserServlet extends HttpServlet {
             response.sendRedirect("error.jsp");
         }
     }
+
+    public void doBatchDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        String[] ids = request.getParameterValues("id[]");
+
+        if(ids == null || ids.length == 0){
+            response.sendRedirect("error.jsp");
+            return;
+        }
+
+        UserDao userDao = new UserDaoImpl();
+        int successCount = 0;
+
+        for (String idStr : ids){
+            if(idStr == null || idStr.trim().equals("")) continue;  // 跳过空值
+            int id = Integer.parseInt(idStr);
+            int n = userDao.delete(id);
+            if(n > 0){
+                successCount++;
+            }
+        }
+
+        if(successCount == ids.length){
+            response.sendRedirect("success.jsp");
+        } else {
+            response.sendRedirect("error.jsp");
+        }
+    }
+
 }

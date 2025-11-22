@@ -9,4 +9,7 @@ public interface UserDao {
     ArrayList queryAll();
     int add(User user);
     int delete(int id);
+    int getRecordCount();
+    int getPageCount();
+    ArrayList queryPage(int Cpage);
 }

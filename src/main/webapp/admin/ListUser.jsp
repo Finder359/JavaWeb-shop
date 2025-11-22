@@ -21,7 +21,7 @@
     <script src="js/pintuer.js"></script>
 </head>
 <body>
-<form method="post" action="" id="listform">
+<form method="post" action="UserServlet?op=batchDelete" id="listform">
     <div class="panel admin-panel">
         <div class="panel-head"><strong class="icon-reorder"> 内容列表</strong> <a href="" style="float:right; display:none;">添加字段</a></div>
         <div class="padding border-bottom">
@@ -84,7 +84,7 @@
 
             <volist name="list" id="vo">
                 <tr>
-                    <td style="text-align:left; padding-left:20px;"><input type="checkbox" name="id[]" value="" />
+                    <td style="text-align:left; padding-left:20px;"><input type="checkbox" name="id[]" value="<%=user.getId()%>" />
                         <%=user.getId()%></td>
                     <td><%=user.getUsername()%></td>
                     <td><%=user.getPassword()%></td>

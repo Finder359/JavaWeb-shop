@@ -14,7 +14,7 @@ public class UserDaoImpl implements UserDao {
     Connection conn=null;
     PreparedStatement ps=null;
     ResultSet rs=null;
-
+    public static final int PAGESIZE=6;//分页每页数量
 
     @Override
     public boolean login(String username, String password) {
@@ -34,8 +34,6 @@ public class UserDaoImpl implements UserDao {
         }finally {
             DBUtil.close(rs,ps,conn);
         }
-
-
         return flag;
     }
 
@@ -104,5 +102,62 @@ public class UserDaoImpl implements UserDao {
         }
 
         return n;
+    }
+
+    @Override
+    public int getRecordCount() {
+        int recordCount=0;
+        conn= DBUtil.getConn();
+        String sql="select count(*) from admin_info ";
+        try {
+            ps=conn.prepareStatement(sql);
+            rs=ps.executeQuery();
+            if(rs.next()){
+                recordCount=rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }finally {
+            DBUtil.close(rs,ps,conn);
+        }
+
+        return recordCount;
+    }
+
+    @Override
+    public int getPageCount() {
+        return (getRecordCount()+PAGESIZE-1)/PAGESIZE;
+    }
+
+    @Override
+    public ArrayList queryPage(int Cpage) {
+
+        ArrayList<User> users = new ArrayList<>();
+        conn = DBUtil.getConn();
+
+        String sql="select * from admin_info limit ?,?";
+        try {
+            ps=conn.prepareStatement(sql);
+            ps.setInt(1,(Cpage-1)*PAGESIZE);
+            ps.setInt(2,PAGESIZE);
+            rs=ps.executeQuery();
+
+            //遍历结果集
+            while (rs.next()) {
+                User user=new User();
+                user.setId(rs.getInt("id"));
+                user.setUsername(rs.getNString("name"));
+                user.setPassword(rs.getNString("pwd"));
+                users.add(user);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+
+        }finally {
+            DBUtil.close(rs,ps,conn);
+        }
+        return users;
+
     }
 }

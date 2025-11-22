@@ -4,12 +4,16 @@ import com.shop.dao.UserDao;
 import com.shop.dao.impl.UserDaoImpl;
 import com.shop.entity.User;
 
+import java.util.ArrayList;
+
 
 public class TestUserDao {
     public static void main(String[] args) {
 //    testLogin();
 //        testAdd();
-        testDelete();
+//        testDelete();
+//        testGetRecordCount();
+        testQueryPage();
     }
 
     public static void testLogin(){
@@ -32,5 +36,20 @@ public class TestUserDao {
         int n= userDao.delete(8);
         System.out.println(n);
 
+    }
+
+    public static void testGetRecordCount(){
+        UserDao userDao = new UserDaoImpl();
+        int n= userDao.getRecordCount();
+        System.out.println(n);
+
+    }
+
+    public static void testQueryPage(){
+        UserDao userDao = new UserDaoImpl();
+        ArrayList<User> users=userDao.queryPage(1);
+        for(User user:users){
+            System.out.println(user.toString());
+        }
     }
 }
