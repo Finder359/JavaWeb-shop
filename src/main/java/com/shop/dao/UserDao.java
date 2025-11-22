@@ -8,4 +8,5 @@ public interface UserDao {
     boolean login(String username,String password);
     ArrayList queryAll();
     int add(User user);
+    int delete(int id);
 }

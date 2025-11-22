@@ -87,4 +87,22 @@ public class UserDaoImpl implements UserDao {
 
         return n;
     }
+
+    @Override
+    public int delete(int id) {
+        int n=0;
+        conn = DBUtil.getConn();
+        String sql="delete from admin_info where id=?";
+        try {
+            ps=conn.prepareStatement(sql);
+            ps.setInt(1,id);
+            n=ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }finally {
+            DBUtil.close(ps,conn);
+        }
+
+        return n;
+    }
 }

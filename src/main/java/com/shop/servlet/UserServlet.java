@@ -49,6 +49,10 @@ public class UserServlet extends HttpServlet {
                 doAdd(request,response);
         }
 
+        if ("delete".equals(op)){
+            doDelete(request,response);
+        }
+
 
     }
 
@@ -101,6 +105,23 @@ public class UserServlet extends HttpServlet {
 
         UserDao userDao = new UserDaoImpl();
         int n=userDao.add(user);
+        if(n>0){
+            response.sendRedirect("success.jsp");
+        }else {
+            response.sendRedirect("error.jsp");
+        }
+    }
+
+    public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        int id=0;
+
+        String tid=request.getParameter("id");
+        if(tid!=null&&!tid.isEmpty()){
+            id=Integer.parseInt(tid);
+        }
+
+        UserDao userDao = new UserDaoImpl();
+        int n=userDao.delete(id);
         if(n>0){
             response.sendRedirect("success.jsp");
         }else {

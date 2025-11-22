@@ -8,7 +8,8 @@ import com.shop.entity.User;
 public class TestUserDao {
     public static void main(String[] args) {
 //    testLogin();
-        testAdd();
+//        testAdd();
+        testDelete();
     }
 
     public static void testLogin(){
@@ -24,5 +25,12 @@ public class TestUserDao {
         user.setPassword("123456");
         int n= userDao.add(user);
         System.out.println(n);
+    }
+
+    public static void testDelete(){
+        UserDao userDao = new UserDaoImpl();
+        int n= userDao.delete(8);
+        System.out.println(n);
+
     }
 }
