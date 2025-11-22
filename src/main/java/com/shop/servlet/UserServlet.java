@@ -19,12 +19,12 @@ import javax.servlet.http.HttpSession;
 public class UserServlet extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
     doPost(request, response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
         String op=request.getParameter("op");
 
@@ -55,6 +55,14 @@ public class UserServlet extends HttpServlet {
 
         if("batchDelete".equals(op)){
             doBatchDelete(request, response);
+        }
+
+        if ("showEdit".equals(op)) {
+            doShowEdit(request, response);
+        }
+
+        if ("update".equals(op)) {
+            doUpdate(request, response);
         }
 
 
@@ -102,6 +110,7 @@ public class UserServlet extends HttpServlet {
     }
 
     public  void doAdd(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        request.setCharacterEncoding("UTF-8");
         String username=request.getParameter("username");
         String password=request.getParameter("password");
         User user=new User();
@@ -161,5 +170,42 @@ public class UserServlet extends HttpServlet {
             response.sendRedirect("error.jsp");
         }
     }
+
+    public void doShowEdit(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        String tid = request.getParameter("id");
+        int id = Integer.parseInt(tid);
+
+        UserDao userDao = new UserDaoImpl();
+        User user = userDao.findById(id);
+
+        request.setAttribute("user", user);
+        request.getRequestDispatcher("editUser.jsp").forward(request, response);
+    }
+
+    public void doUpdate(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        request.setCharacterEncoding("UTF-8");
+        int id = Integer.parseInt(request.getParameter("id"));
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+
+        User user = new User();
+        user.setId(id);
+        user.setUsername(username);
+        user.setPassword(password);
+
+        UserDao userDao = new UserDaoImpl();
+        int n = userDao.update(user);
+
+        if(n > 0){
+            response.sendRedirect("success.jsp");
+        } else {
+            response.sendRedirect("error.jsp");
+        }
+    }
+
+
 
 }

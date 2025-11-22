@@ -160,4 +160,59 @@ public class UserDaoImpl implements UserDao {
         return users;
 
     }
+
+    @Override
+    public User findById(int id) {
+
+        User user = null;
+        conn = DBUtil.getConn();
+
+        String sql = "SELECT * FROM admin_info WHERE id = ?";
+
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                user = new User();
+                user.setId(rs.getInt("id"));
+                user.setUsername(rs.getNString("name"));
+                user.setPassword(rs.getNString("pwd"));
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+
+        } finally {
+            DBUtil.close(rs, ps, conn);
+        }
+
+        return user;
+    }
+
+
+    @Override
+    public int update(User user) {
+        conn = DBUtil.getConn();
+        String sql = "UPDATE admin_info SET name = ?, pwd = ? WHERE id = ?";
+        int n=0;
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, user.getUsername());
+            ps.setString(2, user.getPassword());
+            ps.setInt(3, user.getId());  // 根据 id 修改对应用户
+            n = ps.executeUpdate();
+
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            DBUtil.close(ps, conn);
+        }
+
+        return n;
+    }
+
+
 }

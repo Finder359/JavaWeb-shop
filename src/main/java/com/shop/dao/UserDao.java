@@ -12,4 +12,6 @@ public interface UserDao {
     int getRecordCount();
     int getPageCount();
     ArrayList queryPage(int Cpage);
+    User findById(int id);
+    int update(User  user);
 }

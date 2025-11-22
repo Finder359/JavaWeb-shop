@@ -88,7 +88,7 @@
                         <%=user.getId()%></td>
                     <td><%=user.getUsername()%></td>
                     <td><%=user.getPassword()%></td>
-                    <td><div class="button-group"> <a class="button border-main" href="add.html"><span class="icon-edit"></span> 修改</a> <a class="button border-red" href="UserServlet?op=delete&id=<%=user.getId()%>" onclick="return del(1,1,1)"><span class="icon-trash-o"></span> 删除</a> </div></td>
+                    <td><div class="button-group"> <a class="button border-main" href="UserServlet?op=showEdit&id=<%=user.getId()%>"><span class="icon-edit"></span> 修改</a> <a class="button border-red" href="UserServlet?op=delete&id=<%=user.getId()%>" onclick="return del(1,1,1)"><span class="icon-trash-o"></span> 删除</a> </div></td>
                 </tr>
 <%
                     }
