@@ -6,6 +6,14 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    // 处理退出登录
+    if ("logout".equals(request.getParameter("action"))) {
+        session.invalidate();
+        response.sendRedirect("index.jsp");
+        return;
+    }
+%>
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -33,29 +41,41 @@
     <div class="wrap">
         <div class="header-top-left">
             <div class="box">
-                <select tabindex="4" class="dropdown">
-                    <option value="" class="label" value="">Language :</option>
-                    <option value="1">English</option>
-                    <option value="2">French</option>
-                    <option value="3">German</option>
-                </select>
+<%--                <select tabindex="4" class="dropdown">--%>
+<%--                    <option value="" class="label" value="">Language :</option>--%>
+<%--                    <option value="1">English</option>--%>
+<%--                    <option value="2">French</option>--%>
+<%--                    <option value="3">German</option>--%>
+<%--                </select>--%>
             </div>
             <div class="box1">
-                <select tabindex="4" class="dropdown">
-                    <option value="" class="label" value="">Currency :</option>
-                    <option value="1">$ Dollar</option>
-                    <option value="2">€ Euro</option>
-                </select>
+<%--                <select tabindex="4" class="dropdown">--%>
+<%--                    <option value="" class="label" value="">Currency :</option>--%>
+<%--                    <option value="1">$ Dollar</option>--%>
+<%--                    <option value="2">€ Euro</option>--%>
+<%--                </select>--%>
             </div>
             <div class="clear"></div>
         </div>
         <div class="cssmenu">
             <ul>
-                <li class="active"><a href="login.html">Account</a></li> |
-                <li><a href="checkout.html">Wishlist</a></li> |
-                <li><a href="checkout.html">Checkout</a></li> |
-                <li><a href="login.html">Log In</a></li> |
-                <li><a href="register.html">Sign Up</a></li>
+                <%
+                    String username = (String) session.getAttribute("username");
+                    if (username != null) {
+                %>
+                <li><a href="#">欢迎, <%= username %></a></li> |
+                <li><a href="myOrders.jsp">我的订单</a></li> |
+                <li><a href="cart.jsp">购物车</a></li> |
+                <li><a href="index.jsp?action=logout">退出登录</a></li>
+                <%
+                } else {
+                %>
+                <li><a href="login.jsp">登录</a></li> |
+                <li><a href="register.jsp">注册</a></li> |
+                <li><a href="cart.jsp">购物车</a></li>
+                <%
+                    }
+                %>
             </ul>
         </div>
         <div class="clear"></div>
@@ -69,94 +89,89 @@
             </div>
             <div class="menu">
                 <ul class="megamenu skyblue">
-                    <li class="active grid"><a href="index.html">Home</a></li>
-                    <li><a class="color4" href="#">women</a>
+                    <li class="active grid"><a href="index.jsp">首页</a></li>
+                    <li><a class="color4" href="womens.jsp">女款</a>
                         <div class="megapanel">
                             <div class="row">
                                 <div class="col1">
                                     <div class="h_nav">
-                                        <h4>Contact Lenses</h4>
+                                        <h4>太阳镜</h4>
                                         <ul>
-                                            <li><a href="womens.html">Daily-wear soft lenses</a></li>
-                                            <li><a href="womens.html">Extended-wear</a></li>
-                                            <li><a href="womens.html">Lorem ipsum </a></li>
-                                            <li><a href="womens.html">Planned replacement</a></li>
+                                            <li><a href="womens.jsp?type=太阳镜">经典款</a></li>
+                                            <li><a href="womens.jsp?type=太阳镜">运动款</a></li>
+                                            <li><a href="womens.jsp?type=太阳镜">时尚款</a></li>
                                         </ul>
                                     </div>
                                 </div>
                                 <div class="col1">
                                     <div class="h_nav">
-                                        <h4>Sun Glasses</h4>
+                                        <h4>防蓝光眼镜</h4>
                                         <ul>
-                                            <li><a href="womens.html">Heart-Shaped</a></li>
-                                            <li><a href="womens.html">Square-Shaped</a></li>
-                                            <li><a href="womens.html">Round-Shaped</a></li>
-                                            <li><a href="womens.html">Oval-Shaped</a></li>
+                                            <li><a href="womens.jsp?type=防蓝光">办公防护</a></li>
+                                            <li><a href="womens.jsp?type=防蓝光">游戏专用</a></li>
                                         </ul>
                                     </div>
                                 </div>
                                 <div class="col1">
                                     <div class="h_nav">
-                                        <h4>Eye Glasses</h4>
+                                        <h4>光学镜架</h4>
                                         <ul>
-                                            <li><a href="womens.html">Anti Reflective</a></li>
-                                            <li><a href="womens.html">Aspheric</a></li>
-                                            <li><a href="womens.html">Bifocal</a></li>
-                                            <li><a href="womens.html">Hi-index</a></li>
-                                            <li><a href="womens.html">Progressive</a></li>
+                                            <li><a href="womens.jsp?type=光学镜架">金属框</a></li>
+                                            <li><a href="womens.jsp?type=光学镜架">板材框</a></li>
                                         </ul>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </li>
-                    <li><a class="color5" href="#">Men</a>
+                    <li><a class="color5" href="mens.jsp">男款</a>
                         <div class="megapanel">
                             <div class="col1">
                                 <div class="h_nav">
-                                    <h4>Contact Lenses</h4>
+                                    <h4>隐形眼镜</h4>
                                     <ul>
-                                        <li><a href="mens.html">Daily-wear soft lenses</a></li>
-                                        <li><a href="mens.html">Extended-wear</a></li>
-                                        <li><a href="mens.html">Lorem ipsum </a></li>
-                                        <li><a href="mens.html">Planned replacement</a></li>
+                                        <li><a href="mens.jsp">日抛软性隐形眼镜</a></li>
+                                        <li><a href="mens.jsp">长戴型隐形眼镜</a></li>
+                                        <li><a href="mens.jsp">彩色美瞳</a></li>
+                                        <li><a href="mens.jsp">定期更换型</a></li>
                                     </ul>
                                 </div>
                             </div>
                             <div class="col1">
                                 <div class="h_nav">
-                                    <h4>Sun Glasses</h4>
+                                    <h4>太阳镜</h4>
                                     <ul>
-                                        <li><a href="mens.html">Heart-Shaped</a></li>
-                                        <li><a href="mens.html">Square-Shaped</a></li>
-                                        <li><a href="mens.html">Round-Shaped</a></li>
-                                        <li><a href="mens.html">Oval-Shaped</a></li>
+                                        <li><a href="mens.jsp">心形镜框</a></li>
+                                        <li><a href="mens.jsp">方形镜框</a></li>
+                                        <li><a href="mens.jsp">圆形镜框</a></li>
+                                        <li><a href="mens.jsp">椭圆镜框</a></li>
                                     </ul>
                                 </div>
                             </div>
                             <div class="col1">
                                 <div class="h_nav">
-                                    <h4>Eye Glasses</h4>
+                                    <h4>光学眼镜</h4>
                                     <ul>
-                                        <li><a href="mens.html">Anti Reflective</a></li>
-                                        <li><a href="mens.html">Aspheric</a></li>
-                                        <li><a href="mens.html">Bifocal</a></li>
-                                        <li><a href="mens.html">Hi-index</a></li>
-                                        <li><a href="mens.html">Progressive</a></li>
+                                        <li><a href="mens.jsp">防反光镜片</a></li>
+                                        <li><a href="mens.jsp">非球面镜片</a></li>
+                                        <li><a href="mens.jsp">双光镜片</a></li>
+                                        <li><a href="mens.jsp">高折射率超薄镜片</a></li>
+                                        <li><a href="mens.jsp">渐进多焦镜片</a></li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
                     </li>
-                    <li><a class="color6" href="other.html">Other</a></li>
-                    <li><a class="color7" href="other.html">Purchase</a></li>
+
+                    <li><a class="color6" href="other.jsp">其他</a></li>
+                    <li><a class="color7" href="purchase.jsp">优惠专区</a></li>
                 </ul>
             </div>
         </div>
         <div class="header-bottom-right">
             <div class="search">
-                <input type="text" name="s" class="textbox" value="Search" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Search';}">
-                <input type="submit" value="Subscribe" id="submit" name="submit">
+                <input type="text" name="s" class="textbox" value="搜索商品" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = '搜索商品';}">
+                <input type="submit" value="搜索" id="submit" name="submit">
                 <div id="response"> </div>
             </div>
             <div class="tag-list">
@@ -176,7 +191,7 @@
                         </ul>
                     </li>
                 </ul>
-                <ul class="last"><li><a href="#">Cart(0)</a></li></ul>
+                <ul class="last"><li><a href="cart.jsp">购物车(0)</a></li></ul>
             </div>
         </div>
         <div class="clear"></div>
@@ -193,11 +208,8 @@
             <div class="slide_content">
                 <div class="slide_content_wrap">
                     <!-- Text title -->
-                    <h4 class="title">Aluminium Club</h4>
-                    <!-- /Text title -->
-
-                    <!-- Text description -->
-                    <p class="description">Experiance ray ban</p>
+                    <h4 class="title">铝合金系列</h4>
+                    <p class="description">体验雷朋经典</p>
                     <!-- /Text description -->
                 </div>
             </div>
@@ -208,8 +220,8 @@
             <img src="images/banner1.jpg" alt=""/>
             <div class="slide_content">
                 <div class="slide_content_wrap">
-                    <h4 class="title">consectetuer adipiscing </h4>
-                    <p class="description">diam nonummy nibh euismod</p>
+                    <h4 class="title">时尚潮流系列</h4>
+                    <p class="description">引领眼镜新风尚</p>
                 </div>
             </div>
         </div>
@@ -224,20 +236,24 @@
     <div class="wrap">
         <div class="section group">
             <div class="cont span_2_of_3">
-                <h2 class="head">Featured Products</h2>
+                <h2 class="head">特色商品</h2>
+                <%
+                    // 这里先用静态数据测试，后面改成从数据库读取
+                    // 等你发我 UserDao/Impl 后，我写 ProductServlet 和 ProductDao
+                %>
                 <div class="top-box">
                     <div class="col_1_of_3 span_1_of_3">
-                        <a href="single.html">
+                        <a href="single.jsp?id=6">
                             <div class="inner_content clearfix">
                                 <div class="product_image">
                                     <img src="images/pic.jpg" alt=""/>
                                 </div>
-                                <div class="sale-box"><span class="on_sale title_shop">New</span></div>
+                                <div class="sale-box"><span class="on_sale title_shop">新品</span></div>
                                 <div class="price">
                                     <div class="cart-left">
-                                        <p class="title">Lorem Ipsum simply</p>
+                                        <p class="title">雷朋飞行员太阳镜</p>
                                         <div class="price1">
-                                            <span class="actual">$12.00</span>
+                                            <span class="actual">¥1299</span>
                                         </div>
                                     </div>
                                     <div class="cart-right"> </div>
@@ -246,17 +262,19 @@
                             </div>
                         </a>
                     </div>
+
                     <div class="col_1_of_3 span_1_of_3">
-                        <a href="single.html">
+                        <a href="single.jsp?id=6">
                             <div class="inner_content clearfix">
                                 <div class="product_image">
-                                    <img src="images/pic1.jpg" alt=""/>
+                                    <img src="images/pic.jpg" alt=""/>
                                 </div>
+                                <div class="sale-box"><span class="on_sale title_shop">新品</span></div>
                                 <div class="price">
                                     <div class="cart-left">
-                                        <p class="title">Lorem Ipsum simply</p>
+                                        <p class="title">雷朋飞行员太阳镜</p>
                                         <div class="price1">
-                                            <span class="actual">$12.00</span>
+                                            <span class="actual">¥1299</span>
                                         </div>
                                     </div>
                                     <div class="cart-right"> </div>
@@ -265,19 +283,19 @@
                             </div>
                         </a>
                     </div>
+
                     <div class="col_1_of_3 span_1_of_3">
-                        <a href="single.html">
+                        <a href="single.jsp?id=6">
                             <div class="inner_content clearfix">
                                 <div class="product_image">
-                                    <img src="images/pic2.jpg" alt=""/>
+                                    <img src="images/pic.jpg" alt=""/>
                                 </div>
-                                <div class="sale-box1"><span class="on_sale title_shop">Sale</span></div>
+                                <div class="sale-box"><span class="on_sale title_shop">新品</span></div>
                                 <div class="price">
                                     <div class="cart-left">
-                                        <p class="title">Lorem Ipsum simply</p>
+                                        <p class="title">雷朋飞行员太阳镜</p>
                                         <div class="price1">
-                                            <span class="reducedfrom">$66.00</span>
-                                            <span class="actual">$12.00</span>
+                                            <span class="actual">¥1299</span>
                                         </div>
                                     </div>
                                     <div class="cart-right"> </div>
@@ -286,133 +304,11 @@
                             </div>
                         </a>
                     </div>
-                    <div class="clear"></div>
+                    <!-- 其他商品同理 -->
                 </div>
-                <div class="top-box">
-                    <div class="col_1_of_3 span_1_of_3">
-                        <a href="single.html">
-                            <div class="inner_content clearfix">
-                                <div class="product_image">
-                                    <img src="images/pic3.jpg" alt=""/>
-                                </div>
-                                <div class="price">
-                                    <div class="cart-left">
-                                        <p class="title">Lorem Ipsum simply</p>
-                                        <div class="price1">
-                                            <span class="actual">$12.00</span>
-                                        </div>
-                                    </div>
-                                    <div class="cart-right"> </div>
-                                    <div class="clear"></div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col_1_of_3 span_1_of_3">
-                        <a href="single.html">
-                            <div class="inner_content clearfix">
-                                <div class="product_image">
-                                    <img src="images/pic4.jpg" alt=""/>
-                                </div>
-                                <div class="sale-box"><span class="on_sale title_shop">New</span></div>
-                                <div class="price">
-                                    <div class="cart-left">
-                                        <p class="title">Lorem Ipsum simply</p>
-                                        <div class="price1">
-                                            <span class="actual">$12.00</span>
-                                        </div>
-                                    </div>
-                                    <div class="cart-right"> </div>
-                                    <div class="clear"></div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col_1_of_3 span_1_of_3">
-                        <a href="single.html">
-                            <div class="inner_content clearfix">
-                                <div class="product_image">
-                                    <img src="images/pic5.jpg" alt=""/>
-                                </div>
-                                <div class="price">
-                                    <div class="cart-left">
-                                        <p class="title">Lorem Ipsum simply</p>
-                                        <div class="price1">
-                                            <span class="actual">$12.00</span>
-                                        </div>
-                                    </div>
-                                    <div class="cart-right"> </div>
-                                    <div class="clear"></div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="clear"></div>
-                </div>
-                <div class="top-box1">
-                    <div class="col_1_of_3 span_1_of_3">
-                        <a href="single.html">
-                            <div class="inner_content clearfix">
-                                <div class="product_image">
-                                    <img src="images/pic6.jpg" alt=""/>
-                                </div>
-                                <div class="sale-box"><span class="on_sale title_shop">New</span></div>
-                                <div class="price">
-                                    <div class="cart-left">
-                                        <p class="title">Lorem Ipsum simply</p>
-                                        <div class="price1">
-                                            <span class="actual">$12.00</span>
-                                        </div>
-                                    </div>
-                                    <div class="cart-right"> </div>
-                                    <div class="clear"></div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col_1_of_3 span_1_of_3">
-                        <a href="single.html">
-                            <div class="inner_content clearfix">
-                                <div class="product_image">
-                                    <img src="images/pic7.jpg" alt=""/>
-                                </div>
-                                <div class="sale-box1"><span class="on_sale title_shop">Sale</span></div>
-                                <div class="price">
-                                    <div class="cart-left">
-                                        <p class="title">Lorem Ipsum simply</p>
-                                        <div class="price1">
-                                            <span class="reducedfrom">$66.00</span>
-                                            <span class="actual">$12.00</span>
-                                        </div>
-                                    </div>
-                                    <div class="cart-right"> </div>
-                                    <div class="clear"></div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col_1_of_3 span_1_of_3">
-                        <a href="single.html">
-                            <div class="inner_content clearfix">
-                                <div class="product_image">
-                                    <img src="images/pic8.jpg" alt=""/>
-                                </div>
-                                <div class="sale-box"><span class="on_sale title_shop">New</span></div>
-                                <div class="price">
-                                    <div class="cart-left">
-                                        <p class="title">Lorem Ipsum simply</p>
-                                        <div class="price1">
-                                            <span class="actual">$12.00</span>
-                                        </div>
-                                    </div>
-                                    <div class="cart-right"> </div>
-                                    <div class="clear"></div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="clear"></div>
-                </div>
+
+
+
                 <h2 class="head">Staff Pick</h2>
                 <div class="top-box1">
                     <div class="col_1_of_3 span_1_of_3">
@@ -563,8 +459,8 @@
                 </div>
                 <div class="top-border"> </div>
                 <div class="sidebar-bottom">
-                    <h2 class="m_1">Newsletters<br> Signup</h2>
-                    <p class="m_text">Lorem ipsum dolor sit amet, consectetuer</p>
+                    <h2 class="m_1">订阅我们的<br>最新消息</h2>
+                    <p class="m_text">获取最新优惠信息</p>
                     <div class="subscribe">
                         <form>
                             <input name="userName" type="text" class="textbox">
@@ -583,12 +479,12 @@
             <div class="section group example">
                 <div class="col_1_of_2 span_1_of_2">
                     <ul class="f-list">
-                        <li><img src="images/2.png"><span class="f-text">Free Shipping on orders over $ 100</span><div class="clear"></div></li>
+                        <li><img src="images/2.png"><span class="f-text">订单满¥100免运费</span><div class="clear"></div></li>
                     </ul>
                 </div>
                 <div class="col_1_of_2 span_1_of_2">
                     <ul class="f-list">
-                        <li><img src="images/3.png"><span class="f-text">Call us! toll free-222-555-6666 </span><div class="clear"></div></li>
+                        <li><img src="images/3.png"><span class="f-text">客服热线：400-888-6666</span><div class="clear"></div></li>
                     </ul>
                 </div>
                 <div class="clear"></div>
