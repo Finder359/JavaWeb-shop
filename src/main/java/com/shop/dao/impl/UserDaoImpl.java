@@ -191,6 +191,36 @@ public class UserDaoImpl implements UserDao {
         return user;
     }
 
+    public User getUserByName(String username) {
+
+        User user = null;
+        conn = DBUtil.getConn();
+
+        String sql = "SELECT * FROM admin_info WHERE name = ?";
+
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, username);  // 如果你的表是 NVARCHAR 用 setNString
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                user = new User();
+                user.setId(rs.getInt("id"));
+                user.setUsername(rs.getString("name"));
+                user.setPassword(rs.getString("pwd"));
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+
+        } finally {
+            DBUtil.close(rs, ps, conn);
+        }
+
+        return user;
+    }
+
+
 
     @Override
     public int update(User user) {

@@ -1,11 +1,14 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: xh
-  Date: 2025/11/8
-  Time: 10:03
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    String msg = request.getParameter("msg");
+    if ("notlogin".equals(msg)) {
+%>
+<script>
+    alert("未登录，请先登录");
+</script>
+<%
+    }
+%>
 <!DOCTYPE html>
 <html lang="zh-cn">
 <head>
@@ -44,10 +47,10 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="field">
-                                <input type="text" class="input input-big" name="code" placeholder="填写右侧的验证码" data-validate="required:请填写右侧的验证码" />
-                                <img src="images/passcode.jpg" alt="" width="100" height="32" class="passcode" style="height:43px;cursor:pointer;" onclick="this.src=this.src+'?'">
-
+                            <div class="field" style="display: flex; align-items: center;">
+                                <input type="text" class="input input-big" name="code" placeholder="填写右侧的验证码" data-validate="required:请填写右侧的验证码" style="flex: 1; margin-right: 10px;"/>
+                                <!-- ✅ 改成真实验证码 -->
+                                <img id="captchaImg" src="/admin/CaptchaServlet" alt="验证码" width="100" height="43" style="cursor:pointer;" onclick="refreshCaptcha()" title="点击刷新验证码">
                             </div>
                         </div>
                     </div>
@@ -57,6 +60,14 @@
         </div>
     </div>
 </div>
+
+<script>
+    // 刷新验证码函数
+    function refreshCaptcha() {
+        var img = document.getElementById('captchaImg');
+        img.src = 'CaptchaServlet?' + new Date().getTime();
+    }
+</script>
 
 </body>
 </html>

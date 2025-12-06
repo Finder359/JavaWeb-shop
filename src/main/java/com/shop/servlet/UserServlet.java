@@ -69,30 +69,42 @@ public class UserServlet extends HttpServlet {
 
     }
 
-    public void doLogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doLogin(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-        //登录
-        HttpSession session = request.getSession(true);
+        // 1. 验证码检查
+        String inputCode = request.getParameter("code");
+        HttpSession session = request.getSession();
+        String sessionCode = (String) session.getAttribute("captcha");
+
+        if (inputCode == null || sessionCode == null ||
+                !inputCode.trim().equalsIgnoreCase(sessionCode)) {
+
+            request.setAttribute("error", "验证码错误");
+            request.getRequestDispatcher("/admin/login.jsp").forward(request, response);
+            return;
+        }
+
+        // 2. 用户名密码校验
         String username = request.getParameter("username");
         String password = request.getParameter("password");
+
         UserDao userDao = new UserDaoImpl();
         boolean success = userDao.login(username, password);
-
+        User user = userDao.getUserByName(username);
         if (success) {
 
-            session.setAttribute("username", username);  // 存用户名
-            session.setAttribute("loginTime", new java.util.Date().toString()); // 记录本次登录时间
-//        session.setMaxInactiveInterval(120); // 设置 session 超时时间为 120 秒（2分钟）
+            // 登录成功，保存 session 信息
+            session.setAttribute("username", username);
+            session.setAttribute("loginTime", new java.util.Date());
+            session.setAttribute("userId", user.getId());
 
-//            response.sendRedirect("index.html");
-            try {
-                request.getRequestDispatcher("index.jsp").forward(request, response);
-            } catch (ServletException e) {
-                throw new RuntimeException(e);
-            }
+            // 使用 redirect 避免重复提交
+            response.sendRedirect(request.getContextPath() + "/admin/index.jsp");
+
         } else {
-            response.sendRedirect("fail.html");
-//        out.println("<script>alert('用户名或密码错误');location.href='login.jsp';</script>");
+            // 登录失败
+            response.sendRedirect(request.getContextPath() + "/admin/fail.html");
         }
     }
 
@@ -195,8 +207,27 @@ public class UserServlet extends HttpServlet {
     }
 
     public void doUpdate(HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
+            throws IOException, ServletException {
         request.setCharacterEncoding("UTF-8");
+        // 获取当前登录用户信息
+        HttpSession session = request.getSession();
+        Integer currentUserId = (Integer) session.getAttribute("userId");
+
+        // 获取要修改的用户ID
+        String idStr = request.getParameter("id");
+        Integer editUserId = Integer.parseInt(idStr);
+
+        // 权限检查
+        boolean isAdmin = (currentUserId != null && currentUserId == 1);
+        boolean isSelf = (currentUserId != null && currentUserId.equals(editUserId));
+
+        if (!isAdmin && !isSelf) {
+            // 无权限
+            request.setAttribute("error", "您没有权限修改其他用户的信息");
+            request.getRequestDispatcher("/admin/error.jsp").forward(request, response);
+            return;
+        }
+
         int id = Integer.parseInt(request.getParameter("id"));
         String username = request.getParameter("username");
         String password = request.getParameter("password");

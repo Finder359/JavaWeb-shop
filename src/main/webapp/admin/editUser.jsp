@@ -4,6 +4,32 @@
   Date: 2025/11/21
 --%>
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
+<%
+    // 获取当前登录用户信息
+    Integer currentUserId = (Integer) session.getAttribute("userId");
+    String currentUsername = (String) session.getAttribute("username");
+
+    // 获取要修改的用户ID
+    Integer editUserId = (Integer) request.getAttribute("userId");
+    if (editUserId == null && request.getParameter("id") != null) {
+        editUserId = Integer.parseInt(request.getParameter("id"));
+    }
+
+    // 权限检查：只有admin（id=1）可以修改其他用户，普通用户只能改自己
+    boolean isAdmin = (currentUserId != null && currentUserId == 1);
+    boolean isSelf = (currentUserId != null && currentUserId.equals(editUserId));
+
+    if (!isAdmin && !isSelf) {
+        // 无权限
+%>
+<script>
+    alert("您没有权限修改其他用户的信息！");
+    history.back();
+</script>
+<%
+        return;
+    }
+%>
 <!DOCTYPE html>
 <html lang="zh-cn">
 <head>

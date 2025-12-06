@@ -14,4 +14,5 @@ public interface UserDao {
     ArrayList queryPage(int Cpage);
     User findById(int id);
     int update(User  user);
+    User getUserByName(String username);
 }

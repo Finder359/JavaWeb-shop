@@ -6,7 +6,15 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%--<%@ include file="checkLogin.jsp" %>--%>
+<%
+    // 在页面顶部添加退出登录处理逻辑
+    String action = request.getParameter("action");
+    if ("logout".equals(action)) {
+        session.invalidate();  // 销毁Session
+        response.sendRedirect("login.jsp");
+        return;
+    }
+%>
 <!DOCTYPE html>
 <html lang="zh-cn">
 <head>
@@ -24,7 +32,7 @@
     <div class="logo margin-big-left fadein-top">
         <h1><img src="images/y.jpg" class="radius-circle rotate-hover" height="50" alt="" />后台管理中心</h1>
     </div>
-    <div class="head-l"><a class="button button-little bg-green" href="" target="_blank"><span class="icon-home"></span> 前台首页</a> &nbsp;&nbsp;<a href="##" class="button button-little bg-blue"><span class="icon-wrench"></span> 清除缓存</a> &nbsp;&nbsp;<a class="button button-little bg-red" href="login.jsp"><span class="icon-power-off"></span> 退出登录</a> </div>
+    <div class="head-l"><a class="button button-little bg-green" href="" target="_blank"><span class="icon-home"></span> 前台首页</a> &nbsp;&nbsp;<a href="##" onclick="alert('略略略就不给你清除缓存'); return false;" class="button button-little bg-blue"><span class="icon-wrench"></span> 清除缓存</a> &nbsp;&nbsp;<a class="button button-little bg-red" href="index.jsp?action=logout"><span class="icon-power-off"></span> 退出登录</a> </div>
 </div>
 <div class="leftnav">
     <div class="leftnav-title"><strong><span class="icon-list"></span>菜单列表</strong></div>
@@ -33,7 +41,7 @@
     <ul>
         <li><a href="UserServlet?op=queryAll" target="right"><span class="icon-caret-right"></span>用户管理</a></li>
         <li><a href="addUser.jsp" target="right"><span class="icon-caret-right"></span>添加用户</a></li>
-        <li><a href="cate.html" target="right"><span class="icon-caret-right"></span>修改密码</a></li>
+        <li><a href="editUser.jsp" target="right"><span class="icon-caret-right"></span>修改密码</a></li>
     </ul>
     <h2><span class="icon-pencil-square-o"></span>商品管理</h2>
     <ul>
