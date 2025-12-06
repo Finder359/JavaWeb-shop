@@ -13,7 +13,8 @@ public class TestUserDao {
 //        testAdd();
 //        testDelete();
 //        testGetRecordCount();
-        testQueryPage();
+//        testQueryPage();
+        testQueryByID();
     }
 
     public static void testLogin(){
@@ -51,5 +52,11 @@ public class TestUserDao {
         for(User user:users){
             System.out.println(user.toString());
         }
+    }
+
+    public static void testQueryByID(){
+        UserDao userDao = new UserDaoImpl();
+        User user = userDao.findById(1);
+        System.out.println(user.toString());
     }
 }
