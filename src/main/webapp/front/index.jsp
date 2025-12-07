@@ -1,4 +1,7 @@
-<%--
+<%@ page import="com.shop.dao.ProductDao" %>
+<%@ page import="com.shop.dao.impl.ProductDaoImpl" %>
+<%@ page import="com.shop.entity.Product" %>
+<%@ page import="java.util.ArrayList" %><%--
   Created by IntelliJ IDEA.
   User: xh
   Date: 2025/12/6
@@ -68,14 +71,14 @@
                     <% if (vip != null && vip == 1) { %><span style="color: gold;">★VIP</span><% } %>
                 </a></li> |
                 <li><a href="myOrders.jsp">我的订单</a></li> |
-                <li><a href="cart.jsp">购物车</a></li> |
+                <li><a href="checkout.jsp">购物车</a></li> |
                 <li><a href="index.jsp?action=logout">退出登录</a></li>
                 <%
                 } else {
                 %>
                 <li><a href="login.jsp">登录</a></li> |
                 <li><a href="register.jsp">注册</a></li> |
-                <li><a href="cart.jsp">购物车</a></li>
+                <li><a href="checkout.jsp">购物车</a></li>
                 <%
                     }
                 %>
@@ -194,7 +197,7 @@
                         </ul>
                     </li>
                 </ul>
-                <ul class="last"><li><a href="cart.jsp">购物车(0)</a></li></ul>
+                <ul class="last"><li><a href="checkout.jsp">购物车(0)</a></li></ul>
             </div>
         </div>
         <div class="clear"></div>
@@ -241,78 +244,50 @@
             <div class="cont span_2_of_3">
                 <h2 class="head">特色商品</h2>
                 <%
-                    // 这里先用静态数据测试，后面改成从数据库读取
-                    // 等你发我 UserDao/Impl 后，我写 ProductServlet 和 ProductDao
+                    ProductDao dao = new ProductDaoImpl();
+                    ArrayList<Product> productList = dao.QueryAll();
                 %>
-                <div class="top-box">
-                    <div class="col_1_of_3 span_1_of_3">
-                        <a href="single.jsp?id=6">
-                            <div class="inner_content clearfix">
-                                <div class="product_image">
-                                    <img src="images/pic.jpg" alt=""/>
-                                </div>
-                                <div class="sale-box"><span class="on_sale title_shop">新品</span></div>
-                                <div class="price">
-                                    <div class="cart-left">
-                                        <p class="title">雷朋飞行员太阳镜</p>
-                                        <div class="price1">
-                                            <span class="actual">¥1299</span>
-                                        </div>
+
+                    <div class="top-box">
+                        <%
+                            // 只展示前 3 个商品作为特色商品
+                            for(int i = 0; i < productList.size() && i < 3; i++) {
+                                Product p = productList.get(i);
+                        %>
+                        <div class="col_1_of_3 span_1_of_3">
+                            <a href="single.jsp?id=<%=p.getId()%>">
+                                <div class="inner_content clearfix">
+                                    <div class="product_image">
+                                        <img src="<%=p.getPic()%>" alt="<%=p.getpName()%>"/>
                                     </div>
-                                    <div class="cart-right"> </div>
-                                    <div class="clear"></div>
+
+                                    <% if(p.getSale() > 0) { %>
+                                    <div class="sale-box"><span class="on_sale title_shop">新品</span></div>
+                                    <% } %>
+
+                                    <div class="price">
+                                        <div class="cart-left">
+                                            <p class="title"><%=p.getpName()%></p>
+                                            <div class="price1">
+                                                <span class="actual">¥<%=p.getPrice()%></span>
+                                            </div>
+                                        </div>
+                                        <div class="cart-right"></div>
+                                        <div class="clear"></div>
+                                    </div>
                                 </div>
-                            </div>
-                        </a>
+                            </a>
+                        </div>
+                        <%
+                            } // end for
+                        %>
+                        <div class="clear"></div>
                     </div>
 
-                    <div class="col_1_of_3 span_1_of_3">
-                        <a href="single.jsp?id=6">
-                            <div class="inner_content clearfix">
-                                <div class="product_image">
-                                    <img src="images/pic.jpg" alt=""/>
-                                </div>
-                                <div class="sale-box"><span class="on_sale title_shop">新品</span></div>
-                                <div class="price">
-                                    <div class="cart-left">
-                                        <p class="title">雷朋飞行员太阳镜</p>
-                                        <div class="price1">
-                                            <span class="actual">¥1299</span>
-                                        </div>
-                                    </div>
-                                    <div class="cart-right"> </div>
-                                    <div class="clear"></div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-
-                    <div class="col_1_of_3 span_1_of_3">
-                        <a href="single.jsp?id=6">
-                            <div class="inner_content clearfix">
-                                <div class="product_image">
-                                    <img src="images/pic.jpg" alt=""/>
-                                </div>
-                                <div class="sale-box"><span class="on_sale title_shop">新品</span></div>
-                                <div class="price">
-                                    <div class="cart-left">
-                                        <p class="title">雷朋飞行员太阳镜</p>
-                                        <div class="price1">
-                                            <span class="actual">¥1299</span>
-                                        </div>
-                                    </div>
-                                    <div class="cart-right"> </div>
-                                    <div class="clear"></div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <!-- 其他商品同理 -->
-                </div>
 
 
 
-                <h2 class="head">Staff Pick</h2>
+                    <h2 class="head">Staff Pick</h2>
                 <div class="top-box1">
                     <div class="col_1_of_3 span_1_of_3">
                         <a href="single.html">
