@@ -57,4 +57,47 @@ public class ProductDaoImpl implements ProductDao {
         return products;
     }
 
+    @Override
+    public Product queryById(int id) {
+        Product p = null;
+        conn = DBUtil.getConn();
+
+        String sql = "SELECT * FROM product_info WHERE id = ?";
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                p = new Product();
+
+                p.setId(rs.getInt("id"));
+                p.setpCode(rs.getNString("code"));
+                p.setpName(rs.getNString("name"));
+                p.setpType(rs.getNString("type"));
+                p.setpBrand(rs.getNString("brand"));
+                p.setPic(rs.getNString("pic"));
+                p.setNum(rs.getInt("num"));
+                p.setPrice(rs.getDouble("price"));
+                p.setSale(rs.getDouble("sale"));
+                p.setIntro(rs.getNString("intro"));
+                p.setStatus(rs.getInt("status"));
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+
+        } finally {
+            DBUtil.close(rs, ps, conn);
+        }
+
+        return p;
+    }
+
+
+    @Override
+    public ArrayList<Product> QueryByName(String name) {
+        return null;
+    }
+
 }
