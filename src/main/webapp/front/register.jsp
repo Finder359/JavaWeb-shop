@@ -2,23 +2,17 @@
   Created by IntelliJ IDEA.
   User: xh
   Date: 2025/12/6
-  Time: 21:51
+  Time: 23:11
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-    // 显示错误信息
     String error = (String) request.getAttribute("error");
-    //注册成功消息
-    String registerSuccess = (String) session.getAttribute("registerSuccess");
-    if (registerSuccess != null) {
-        session.removeAttribute("registerSuccess"); // 显示后清除
-    }
 %>
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>用户登录</title>
+    <title>Register</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
@@ -28,17 +22,84 @@
     <link href="css/megamenu.css" rel="stylesheet" type="text/css" media="all" />
     <script type="text/javascript" src="js/megamenu.js"></script>
     <script>$(document).ready(function(){$(".megamenu").megamenu();});</script>
-    <!-- dropdown -->
     <script src="js/jquery.easydropdown.js"></script>
+    <script>
+        // 表单验证
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            var password = document.getElementById('password').value;
+            var confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (password !== confirmPassword) {
+                e.preventDefault();
+                alert('两次输入的密码不一致，请重新输入！');
+                return false;
+            }
+
+            var tel = document.getElementById('tel').value;
+            var telPattern = /^1[3-9]\d{9}$/;
+            if (!telPattern.test(tel)) {
+                e.preventDefault();
+                alert('请输入正确的手机号码！');
+                return false;
+            }
+        });
+    </script>
+    <style>
+        .error-msg {
+            color: red;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #ffe6e6;
+            border: 1px solid #ff0000;
+            border-radius: 5px;
+        }
+
+        .form-container h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .form-row > div {
+            flex: 1;
+        }
+        .form-row input,
+        .form-row select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .form-row label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .full-width {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .full-width input,
+        .full-width select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .terms {
+            text-align: center;
+            margin-top: 15px;
+            color: #666;
+        }
+    </style>
 </head>
 <body>
-
-<% if (registerSuccess != null) { %>
-<script>
-    alert("<%= registerSuccess %>");
-</script>
-<% } %>
-
 <div class="header-top">
     <div class="wrap">
         <div class="header-top-left">
@@ -192,47 +253,86 @@
         <div class="clear"></div>
     </div>
 </div>
-<div class="login">
+<div class="register_account">
     <div class="wrap">
-        <div class="col_1_of_login span_1_of_login">
-            <h4 class="title">New Customers</h4>
-            <p>你开着帝豪参加同学聚会，班长拒绝给你发送定位，门口的保安说网约车禁止入内，你连忙解释说这是吉利星瑞，门卫说原来还没有网约车贵那不好意思没有车位，你走进包厢瞬间目光聚会，班长便让你当众下跪，校霸让你给他磕头认罪，说还不如他的揽胜购置税， 你问班长这中间是不是有什么误会，班长说你开帝豪就是有罪，说这是谁叫的代驾想要早退。你自信的报了自己的名讳，班花看着你腰间的钥匙笑出了眼泪，庆幸当年拒绝你是做的真对，你被怼的一言不发像个窝囊废，驼了三十年的背在你提帝豪那一刻彻底断了肋，其实开奥迪的班长早已给你留好上菜位，还问你跑滴滴累是不累，让你坐的靠门可以随时接单撤退，你感激的一把鼻涕一把泪，笑着说不累不累，原本你有所准备，想让昔日同窗刷新一下在他们心中的定位，幻想班花娇羞在我怀中依偎，自责的说当初我们是那么般配，没有给我表白全然是她不对，哄堂大笑这一刻让你尽显狼狈，坚挺的腰杆从这一刻变成驼背，明天我就要去4s店办理退车退费</p>
-            <div class="button1">
-                <a href="register.html"><input type="submit" name="Submit" value="立即注册"></a>
+        <h4 class="title">Create an Account</h4>
+        <% if (error != null) { %>
+        <div class="error-msg">
+            <%= error %>
+        </div>
+        <% } %>
+        <form action="FrontUserServlet?op=register" method="post" id="registerForm">
+
+            <div class="form-row">
+                <div>
+                    <label for="username">用户名 *</label>
+                    <input type="text" id="username" name="username" required placeholder="请输入用户名">
+                </div>
+                <div>
+                    <label for="realName">真实姓名 *</label>
+                    <input type="text" id="realName" name="realName" required placeholder="请输入真实姓名">
+                </div>
             </div>
+
+            <div class="form-row">
+                <div>
+                    <label for="password">密码 *</label>
+                    <input type="password" id="password" name="password" required placeholder="请输入密码">
+                </div>
+                <div>
+                    <label for="confirmPassword">确认密码 *</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="请再次输入密码">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div>
+                    <label for="sex">性别</label>
+                    <select id="sex" name="sex">
+                        <option value="">请选择</option>
+                        <option value="男">男</option>
+                        <option value="女">女</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="tel">联系电话 *</label>
+                    <input type="text" id="tel" name="tel" required placeholder="请输入手机号">
+                </div>
+            </div>
+
+            <div class="full-width">
+                <label for="address">地址 *</label>
+                <input type="text" id="address" name="address" required placeholder="请输入详细地址">
+            </div>
+
+            <div class="form-row">
+                <div>
+                    <label for="question">密保问题（选填）</label>
+                    <select id="question" name="question">
+                        <option value="">请选择</option>
+                        <option value="您的出生地是？">您的出生地是？</option>
+                        <option value="您母亲的名字是？">您母亲的名字是？</option>
+                        <option value="您的小学名称是？">您的小学名称是？</option>
+                        <option value="您最喜欢的颜色是？">您最喜欢的颜色是？</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="answer">密保答案（选填）</label>
+                    <input type="text" id="answer" name="answer" placeholder="请输入密保答案">
+                </div>
+            </div>
+
+            <div class="full-width">
+                <label for="favorate">兴趣爱好（选填）</label>
+                <input type="text" id="favorate" name="favorate" placeholder="例如：阅读、运动、旅游">
+            </div>
+
+
+            <button class="grey">立即注册</button>
+            <p class="terms">点击"立即注册"即表示您同意我们的 <a href="#">服务条款</a>.</p>
             <div class="clear"></div>
-        </div>
-        <div class="col_1_of_login span_1_of_login">
-            <div class="login-title">
-                <h4 class="title">登录</h4>
-                <% if (error != null) { %>
-                <div style="color: red; margin-bottom: 15px;">
-                    <%= error %>
-                </div>
-                <% } %>
-                <div id="loginbox" class="loginbox">
-                    <form action="FrontUserServlet?op=login" method="post" name="login" id="login-form">
-                        <fieldset class="input">
-                            <p id="login-form-username">
-                                <label for="modlgn_username">用户名</label>
-                                <input id="modlgn_username" type="text" name="username" class="inputbox" size="18" autocomplete="off">
-                            </p>
-                            <p id="login-form-password">
-                                <label for="modlgn_passwd">密码</label>
-                                <input id="modlgn_passwd" type="password" name="password" class="inputbox" size="18" autocomplete="off">
-                            </p>
-                            <div class="remember">
-                                <p id="login-form-remember">
-                                    <label for="modlgn_remember"><a href="#">Forget Your Password ? </a></label>
-                                </p>
-                                <input type="submit" name="Submit" class="button" value="登录"><div class="clear"></div>
-                            </div>
-                        </fieldset>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <div class="clear"></div>
+
+        </form>
     </div>
 </div>
 <div class="footer">

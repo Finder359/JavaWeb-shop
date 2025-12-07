@@ -61,9 +61,12 @@
             <ul>
                 <%
                     String username = (String) session.getAttribute("username");
+                    Integer vip = (Integer) session.getAttribute("vip");
                     if (username != null) {
                 %>
-                <li><a href="#">欢迎, <%= username %></a></li> |
+                <li><a href="#">欢迎, <%= username %>
+                    <% if (vip != null && vip == 1) { %><span style="color: gold;">★VIP</span><% } %>
+                </a></li> |
                 <li><a href="myOrders.jsp">我的订单</a></li> |
                 <li><a href="cart.jsp">购物车</a></li> |
                 <li><a href="index.jsp?action=logout">退出登录</a></li>
