@@ -8,6 +8,18 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    Map<Integer, CartItem> cart = (Map<Integer, CartItem>) session.getAttribute("cart");
+    int totalCount = 0;
+    double totalAmount = 0;
+
+    if (cart != null) {
+        for (CartItem item : cart.values()) {
+            totalCount += item.getCount();
+            totalAmount += item.getTotal();
+        }
+    }
+%>
 
 <!DOCTYPE HTML>
 <html>
@@ -211,99 +223,164 @@
         <div class="clear"></div>
     </div>
 </div>
-<div class="register_account">
-    <div class="beij_center">
-        <div class="cart-main-header clearfix">
-            <div class="cart-col-1">
-                <input type="checkbox" class="jdcheckbox select-all">
+<div class="beij_center">
+    <div class="checkout-tit">
+        <span class="tit-txt">填写并核对订单信息</span>
+    </div>
+    <div class="checkout_steps">
+        <div class="step-tit">
+            <h3>收货人信息</h3>
+            <div class="extra_r">
+                <a href="#" class="ftx-05 J_consignee_global">新增收货地址</a>
             </div>
-            <div class="cart-col-2">全选</div>
-            <div class="cart-col-3">商品信息</div>
-            <div class="cart-col-4">
-                <div class="cart-good-real-price">单价</div>
+        </div>
+        <div class="jies_y_shouh_diz shiq_1">
+            <ul>
+                <li class="cur">
+                    <div class="dangq_xuanz_diz">当前地址</div>
+                    <span>海听风吹</span>
+                    <span>福建 福州 连江县 XXXXXXXX</span>
+                    <span>130****2337</span>
+                    <div class="bianji_yv_shanc">
+                        <a href="#">设为默认</a>
+                        <a href="#">编辑</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="jies_y_shouh_diz shiq_2">
+            <ul>
+                <li class="zhif_fangs cur">
+                    <div class="dangq_xuanz_diz">醒肤快递</div>
+                </li>
+
+            </ul>
+        </div>
+        <div class="step-tit">
+            <h3>送货清单</h3>
+            <div class="extra_r">
+                <a href="#" class="ftx-05 J_consignee_global">价格说明</a>
+                <a href="#" class="ftx-05 J_consignee_global">返回修改购物车</a>
             </div>
-            <div class="cart-col-5">数量</div>
-            <div class="cart-col-6">
-                <div class="cart-good-amount">小计</div>
+        </div>
+        <div class="shopping_list">
+            <div class="dis_modes">
+                <div class="mode_item_tit">
+                    <h4>付款方式</h4>
+                </div>
+                <div>
+                    <div class="jies_y_shouh_diz jies_y_shouh_diz_kuaid">
+                        <ul>
+                            <li class="zhif_fangs cur">
+                                <div class="dangq_xuanz_diz">在线支付</div>
+                            </li>
+                            <li class="zhif_fangs">
+                                <div class="dangq_xuanz_diz">货到付款</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="peis_shij">
+                    <p>配送时间： </p><span>工作日、双休日与节假日均可送货</span>
+                </div>
+                <div class="maij_liuy">
+                    <p>给商家留言</p>
+                    <input type="text" value="">
+                </div>
             </div>
-            <div class="cart-col-7">操作</div>
+            <div class="goods_list">
+                <div class="goods_list_neik">
+                    <h4 class="vendor_name_h">眼镜旗舰店</h4>
+
+                    <%
+                        if (cart != null) {
+                            for (CartItem item : cart.values()) {
+                                Product p = item.getProduct();
+                    %>
+
+                    <div class="goods_item">
+                        <div class="p_img">
+                            <a href="single.jsp?id=<%=p.getId()%>">
+                                <img src="<%= p.getPic() %>">
+                            </a>
+                        </div>
+                        <div class="goods_msg">
+                            <div class="p_name">
+                                <a href="single.jsp?id=<%=p.getId()%>"><%= p.getpName() %></a>
+                            </div>
+                            <div class="p_price">
+                                <span class="jq_price">¥<%= p.getPrice() %></span>
+                                <span>x<%= item.getCount() %></span>
+                                <span>有货</span>
+                                <span>—</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <%
+                            } // end for
+                        } // end if
+                    %>
+
+                </div>
+            </div>
+
+        </div>
+        <div class="fap_beij">
+            <div class="step-tit">
+                <h3>发票信息</h3>
+            </div>
+            <div class="kaif_p">
+                <span>普通发票（电子)</span>
+                <span>个人</span>
+                <span> 明细 </span>
+                <span> <a href="#">修改</a> </span>
+            </div>
         </div>
     </div>
-    <%
-        Map<Integer, CartItem> cart = (Map<Integer, CartItem>) session.getAttribute("cart");
-        if (cart != null && cart.size() > 0) {
-
-            for (CartItem item : cart.values()) {
-                Product p = item.getProduct();
-    %>
-
-    <div class="cart-shop-good">
-        <div class="cart-col-1">
-            <input type="checkbox" class="jdcheckbox item-check">
-        </div>
-        <div class="cart-col-2" style="height: 82px;">
-            <a href="single.jsp?id=<%=p.getId()%>" class="g-img">
-                <img src="<%=p.getPic()%>" alt="">
-            </a>
-        </div>
-        <div class="fl houj_c">
-            <div class="cart-dfsg">
-                <div class="cart-good-name">
-                    <a href="single.jsp?id=<%=p.getId()%>"><%=p.getpName()%></a>
-                </div>
+    <!--收费明细-->
+    <div class="order_summary">
+        <div class="qianq_mx">
+            <div class="jiaq_meih">
+                <span class="xiangq_leib"><em class="goumai_ges"><%= totalCount %></em> 件商品，总商品金额：</span>
+                <em class="goum_zongj">¥<%= totalAmount %></em>
             </div>
-
-            <div class="cart-col-4">
-                <div class="cart-good-real-price">
-                    ¥&nbsp;<%=p.getPrice()%>
-                </div>
+            <div class="jiaq_meih">
+                <span class="xiangq_leib">积分：</span>
+                <em class="goum_zongj"><%= String.format("%.2f", totalAmount * 0.1) %></em>
             </div>
-
-            <div class="cart-col-5">
-                <div class="gui-count cart-count">
-                    <a href="CartServlet?action=sub&id=<%=p.getId()%>" class="gui-count-btn gui-count-sub">-</a>
-                    <a href="CartServlet?action=add&id=<%=p.getId()%>" class="gui-count-btn gui-count-add">+</a>
-                    <div class="gui-count-input"><input type="text" value="<%=item.getCount()%>"></div>
-                </div>
+            <div class="jiaq_meih">
+                <span class="xiangq_leib">运费：</span>
+                <em class="goum_zongj">￥00.00</em>
             </div>
-
-            <div class="cart-col-6 ">
-                <div class="cart-good-amount item-total">¥&nbsp;<%=item.getTotal()%></div>
-            </div>
-        </div>
-        <div class="cart-col-7">
-            <div class="cart-good-fun delfixed">
-                <a href="CartServlet?action=delete&id=<%=p.getId()%>">删除</a>
-            </div>
-            <div class="cart-good-fun">
-                <a href="#">移入收藏夹</a>
+            <div class="jiaq_meih">
+                <span class="xiangq_leib">服务费：</span>
+                <em class="goum_zongj">￥00.00</em>
             </div>
         </div>
     </div>
-
-    <%
-        } // end for
-    } else {
-    %>
-    <p>购物车为空</p>
-    <%
-        }
-    %>
-
-    <div class="jies_beij">
-        <div class="beij_center over_dis">
-            <div class="cart-col-1 cart_jies">
-                <input type="checkbox" class="jdcheckbox select-all">
-            </div>
-            <div class="qianm_shanc_yvf">
-                <span>全选</span>
-                <a href="#">删除</a>
-            </div>
-            <div class="jies_ann_bei">
-                <p>已选 <em>0</em> 件商品 总计（不含运费）：<span>￥0.00</span></p>
-                <a href="submit-order.jsp" class="order_btn">去结算</a>
+    <div class="trade_foot_detail_com">
+        <div class="dsgs">
+            <div class="qianq_mx">
+                <div class="jiaq_meih">
+                    <span class="xiangq_leib"> 应付总额：</span>
+                    <em class="goum_zongj zhongf_jine">¥<%= totalAmount %></em>
+                </div>
             </div>
         </div>
+        <div class="zuiz_diz">
+            <span>寄送至： 福建 福州 连江县 XXXXXXXX</span>
+            <span> 收货人：海听风吹 130****2337</span>
+        </div>
+    </div>
+    <div class="tij_dingd_ann">
+        <form id="orderForm" action="OrderServlet" method="post">
+            <input type="hidden" name="action" value="submit">
+            <input type="hidden" name="total" value="<%= totalAmount %>">
+        </form>
+        <a href="javascript:void(0)" class="order_btn" onclick="document.getElementById('orderForm').submit();">
+            提交订单
+        </a>
     </div>
 </div>
 <div class="footer">

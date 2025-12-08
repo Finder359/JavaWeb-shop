@@ -70,7 +70,7 @@
                 <li><a href="#">欢迎, <%= username %>
                     <% if (vip != null && vip == 1) { %><span style="color: gold;">★VIP</span><% } %>
                 </a></li> |
-                <li><a href="myOrders.jsp">我的订单</a></li> |
+                <li><a href="OrderListServlet">我的订单</a></li> |
                 <li><a href="checkout.jsp">购物车</a></li> |
                 <li><a href="index.jsp?action=logout">退出登录</a></li>
                 <%
@@ -285,133 +285,76 @@
                     </div>
 
 
-
-
                     <h2 class="head">Staff Pick</h2>
                 <div class="top-box1">
+                    <%
+                        // 展示4-6个
+                        for(int i = 3; i < productList.size() && i < 6; i++) {
+                            Product p = productList.get(i);
+                    %>
                     <div class="col_1_of_3 span_1_of_3">
-                        <a href="single.html">
+                        <a href="single.jsp?id=<%=p.getId()%>">
                             <div class="inner_content clearfix">
                                 <div class="product_image">
-                                    <img src="images/pic8.jpg" alt=""/>
+                                    <img src="<%=p.getPic()%>" alt="<%=p.getpName()%>"/>
                                 </div>
-                                <div class="sale-box"><span class="on_sale title_shop">New</span></div>
+
+                                <% if(p.getSale() > 0) { %>
+                                <div class="sale-box"><span class="on_sale title_shop">新品</span></div>
+                                <% } %>
+
                                 <div class="price">
                                     <div class="cart-left">
-                                        <p class="title">Lorem Ipsum simply</p>
+                                        <p class="title"><%=p.getpName()%></p>
                                         <div class="price1">
-                                            <span class="actual">$12.00</span>
+                                            <span class="actual">¥<%=p.getPrice()%></span>
                                         </div>
                                     </div>
-                                    <div class="cart-right"> </div>
+                                    <div class="cart-right"></div>
                                     <div class="clear"></div>
                                 </div>
                             </div>
                         </a>
                     </div>
-                    <div class="col_1_of_3 span_1_of_3">
-                        <a href="single.html">
-                            <div class="inner_content clearfix">
-                                <div class="product_image">
-                                    <img src="images/pic4.jpg" alt=""/>
-                                </div>
-                                <div class="price">
-                                    <div class="cart-left">
-                                        <p class="title">Lorem Ipsum simply</p>
-                                        <div class="price1">
-                                            <span class="actual">$12.00</span>
-                                        </div>
-                                    </div>
-                                    <div class="cart-right"> </div>
-                                    <div class="clear"></div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col_1_of_3 span_1_of_3">
-                        <a href="single.html">
-                            <div class="inner_content clearfix">
-                                <div class="product_image">
-                                    <img src="images/pic2.jpg" alt=""/>
-                                </div>
-                                <div class="sale-box"><span class="on_sale title_shop">New</span></div>
-                                <div class="price">
-                                    <div class="cart-left">
-                                        <p class="title">Lorem Ipsum simply</p>
-                                        <div class="price1">
-                                            <span class="actual">$12.00</span>
-                                        </div>
-                                    </div>
-                                    <div class="cart-right"> </div>
-                                    <div class="clear"></div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
+                    <%
+                        } // end for
+                    %>
                     <div class="clear"></div>
                 </div>
                 <h2 class="head">New Products</h2>
                 <div class="section group">
+                    <%
+                        // 展示6-8
+                        for(int i = 6; i < productList.size() && i < 9; i++) {
+                            Product p = productList.get(i);
+                    %>
                     <div class="col_1_of_3 span_1_of_3">
-                        <a href="single.html">
+                        <a href="single.jsp?id=<%=p.getId()%>">
                             <div class="inner_content clearfix">
                                 <div class="product_image">
-                                    <img src="images/pic5.jpg" alt=""/>
+                                    <img src="<%=p.getPic()%>" alt="<%=p.getpName()%>"/>
                                 </div>
-                                <div class="sale-box"><span class="on_sale title_shop">New</span></div>
+
+                                <% if(p.getSale() > 0) { %>
+                                <div class="sale-box"><span class="on_sale title_shop">新品</span></div>
+                                <% } %>
+
                                 <div class="price">
                                     <div class="cart-left">
-                                        <p class="title">Lorem Ipsum simply</p>
+                                        <p class="title"><%=p.getpName()%></p>
                                         <div class="price1">
-                                            <span class="actual">$12.00</span>
+                                            <span class="actual">¥<%=p.getPrice()%></span>
                                         </div>
                                     </div>
-                                    <div class="cart-right"> </div>
+                                    <div class="cart-right"></div>
                                     <div class="clear"></div>
                                 </div>
                             </div>
                         </a>
                     </div>
-                    <div class="col_1_of_3 span_1_of_3">
-                        <a href="single.html">
-                            <div class="inner_content clearfix">
-                                <div class="product_image">
-                                    <img src="images/pic2.jpg" alt=""/>
-                                </div>
-                                <div class="sale-box"><span class="on_sale title_shop">New</span></div>
-                                <div class="price">
-                                    <div class="cart-left">
-                                        <p class="title">Lorem Ipsum simply</p>
-                                        <div class="price1">
-                                            <span class="actual">$12.00</span>
-                                        </div>
-                                    </div>
-                                    <div class="cart-right"> </div>
-                                    <div class="clear"></div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col_1_of_3 span_1_of_3">
-                        <a href="single.html">
-                            <div class="inner_content clearfix">
-                                <div class="product_image">
-                                    <img src="images/pic3.jpg" alt=""/>
-                                </div>
-                                <div class="sale-box"><span class="on_sale title_shop">New</span></div>
-                                <div class="price">
-                                    <div class="cart-left">
-                                        <p class="title">Lorem Ipsum simply</p>
-                                        <div class="price1">
-                                            <span class="actual">$12.00</span>
-                                        </div>
-                                    </div>
-                                    <div class="cart-right"> </div>
-                                    <div class="clear"></div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
+                    <%
+                        } // end for
+                    %>
                     <div class="clear"></div>
                 </div>
             </div>

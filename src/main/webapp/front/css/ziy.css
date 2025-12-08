@@ -2079,7 +2079,7 @@ a.redlink {
 	font-size: 16px;
 	cursor: pointer;
 	border-bottom-right-radius:
-		-moz-border-bottom-right-radius:3px;
+		-moz-border-bottom-right-radius: 3px;
 	-webkit-border-bottom-right-radius: 3px;
 	border-top-right-radius: 3px;
 	-border-top-right-radius: 3px;
@@ -2385,8 +2385,8 @@ transform:translateY(-5px);
 .mod_main {
 	background: #fff;
 	min-height: 365px;
-	float: right;
-	width: 888px;
+	/*float: right;*/
+	/*width: 888px;*/
 }
 
 .mod_main .mt {

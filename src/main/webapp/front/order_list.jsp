@@ -1,6 +1,9 @@
 <%@ page import="com.shop.entity.CartItem" %>
 <%@ page import="java.util.Map" %>
-<%@ page import="com.shop.entity.Product" %><%--
+<%@ page import="com.shop.entity.Product" %>
+<%@ page import="com.shop.entity.Order" %>
+<%@ page import="java.util.List" %>
+<%@ page import="com.shop.entity.OrderDetail" %><%--
   Created by IntelliJ IDEA.
   User: xh
   Date: 2025/12/7
@@ -8,6 +11,8 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
+
 
 <!DOCTYPE HTML>
 <html>
@@ -20,14 +25,14 @@
     <script type="text/javascript" src="js/jquery1.min.js"></script>
     <!-- start menu -->
     <link href="css/megamenu.css" rel="stylesheet" type="text/css" media="all" />
-<%--    <script type="text/javascript" src="js/megamenu.js"></script>--%>
-<%--    <script>$(document).ready(function(){$(".megamenu").megamenu();});</script>--%>
+    <%--    <script type="text/javascript" src="js/megamenu.js"></script>--%>
+    <%--    <script>$(document).ready(function(){$(".megamenu").megamenu();});</script>--%>
     <!-- dropdown -->
     <script src="js/jquery.easydropdown.js"></script>
 
     <link rel="stylesheet" type="text/css" href="css/index.css">
     <link rel="stylesheet" type="text/css" href="css/ziy.css">
-<%--    <script type="text/javascript" src="js/jquery1.42.min.js"></script>--%>
+    <%--    <script type="text/javascript" src="js/jquery1.42.min.js"></script>--%>
     <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
     <script type="text/javascript" src="js/jquery.SuperSlide.2.1.1.source.js"></script>
     <script type="text/javascript" src="js/select.js"></script>
@@ -211,101 +216,263 @@
         <div class="clear"></div>
     </div>
 </div>
-<div class="register_account">
-    <div class="beij_center">
-        <div class="cart-main-header clearfix">
-            <div class="cart-col-1">
-                <input type="checkbox" class="jdcheckbox select-all">
-            </div>
-            <div class="cart-col-2">全选</div>
-            <div class="cart-col-3">商品信息</div>
-            <div class="cart-col-4">
-                <div class="cart-good-real-price">单价</div>
-            </div>
-            <div class="cart-col-5">数量</div>
-            <div class="cart-col-6">
-                <div class="cart-good-amount">小计</div>
-            </div>
-            <div class="cart-col-7">操作</div>
+<style>
+    .order-success-box {
+        width: 70%;
+        margin: 40px auto;
+        padding: 30px 40px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        text-align: center;
+        animation: fadeIn 0.5s ease;
+    }
+
+    .order-success-icon {
+        font-size: 70px;
+        color: #4CAF50;
+        margin-bottom: 15px;
+    }
+
+    .order-success-title {
+        font-size: 26px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .order-success-desc {
+        font-size: 16px;
+        color: #666;
+        margin-bottom: 25px;
+        line-height: 1.6;
+    }
+
+    .order-info-box {
+        display: inline-block;
+        padding: 15px 25px;
+        background: #f7f7f7;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        text-align: left;
+        line-height: 1.8;
+        font-size: 15px;
+        color: #444;
+    }
+
+    .order-btn-group a {
+        display: inline-block;
+        padding: 12px 26px;
+        margin: 0 10px;
+        font-size: 15px;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+        background: #ff4400;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #e03a00;
+    }
+
+    .btn-secondary {
+        border: 1px solid #ccc;
+        color: #666;
+    }
+
+    .btn-secondary:hover {
+        background: #f2f2f2;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px);}
+        to { opacity: 1; transform: translateY(0);}
+    }
+</style>
+
+<div class="mod_main">
+    <div class="jib_xinx_kuang">
+        <div class="shand_piaot">我的订单</div>
+        <div class="tab_trigger tab_trigger_wod_dd">
+            <ul>
+                <li><a class="text_shaid" href="#">全部</a></li>
+                <li><a class="text_shaid" href="#">待付款</a>
+                    <p class="sup">0</p>
+                </li>
+                <li><a class="text_shaid" href="#">待收货</a>
+                    <p class="sup">1</p>
+                </li>
+                <li><a class="text_shaid" href="pingj_shaid.html">待评价</a>
+                    <p class="sup">2</p>
+                </li>
+            </ul>
         </div>
-    </div>
-    <%
-        Map<Integer, CartItem> cart = (Map<Integer, CartItem>) session.getAttribute("cart");
-        if (cart != null && cart.size() > 0) {
-
-            for (CartItem item : cart.values()) {
-                Product p = item.getProduct();
-    %>
-
-    <div class="cart-shop-good">
-        <div class="cart-col-1">
-            <input type="checkbox" class="jdcheckbox item-check">
-        </div>
-        <div class="cart-col-2" style="height: 82px;">
-            <a href="single.jsp?id=<%=p.getId()%>" class="g-img">
-                <img src="<%=p.getPic()%>" alt="">
-            </a>
-        </div>
-        <div class="fl houj_c">
-            <div class="cart-dfsg">
-                <div class="cart-good-name">
-                    <a href="single.jsp?id=<%=p.getId()%>"><%=p.getpName()%></a>
-                </div>
+        <div class="wod_dingd_shuaix">
+            <div class="combox">
+                <div><span class="c-lable" val="1">近三个月的订单</span><i></i></div>
+                <ul class="c-list-value">
+                    <li class=""><a href="#" val="1">近三个月的订单</a></li>
+                    <li class=""><a href="#" val="2017">今年内订单</a></li>
+                    <li class=""><a href="#" val="2016">2019年订单</a></li>
+                    <li class=""><a href="#" val="2015">2018年订单</a></li>
+                    <li class=""><a href="#" val="3">2018年以前订单</a></li>
+                </ul>
             </div>
-
-            <div class="cart-col-4">
-                <div class="cart-good-real-price">
-                    ¥&nbsp;<%=p.getPrice()%>
-                </div>
-            </div>
-
-            <div class="cart-col-5">
-                <div class="gui-count cart-count">
-                    <a href="CartServlet?action=sub&id=<%=p.getId()%>" class="gui-count-btn gui-count-sub">-</a>
-                    <a href="CartServlet?action=add&id=<%=p.getId()%>" class="gui-count-btn gui-count-add">+</a>
-                    <div class="gui-count-input"><input type="text" value="<%=item.getCount()%>"></div>
-                </div>
-            </div>
-
-            <div class="cart-col-6 ">
-                <div class="cart-good-amount item-total">¥&nbsp;<%=item.getTotal()%></div>
+            <p class="dingd_huis_zhan"><a href="#">订单回收站</a></p>
+            <div class="search_box">
+                <input type="text" placeholder="订单编号" class="seach_inpt">
+                <input type="button" value="" class="search-btn">
             </div>
         </div>
-        <div class="cart-col-7">
-            <div class="cart-good-fun delfixed">
-                <a href="CartServlet?action=delete&id=<%=p.getId()%>">删除</a>
-            </div>
-            <div class="cart-good-fun">
-                <a href="#">移入收藏夹</a>
-            </div>
-        </div>
-    </div>
+        <table class="order-tb order-tb_1">
+            <colgroup>
+                <col class="number-col">
+                <col class="consignee-col">
+                <col class="amount-col">
+                <col class="operate-col">
+                <col class="dis_col">
+            </colgroup>
+            <thead>
+            <tr>
+                <th>订单详情</th>
+                <th>金额</th>
+                <th>
+                    <div class="combox combox_2">
+                        <div><span class="c-lable" val="1">订单状态</span><i></i></div>
+                        <ul class="c-list-value">
+                            <li class=""><a href="#" val="2017">等待付款</a></li>
+                            <li class=""><a href="#" val="2016">等待收货</a></li>
+                            <li class=""><a href="#" val="2015">已完成</a></li>
+                            <li class=""><a href="#" val="3">已取消</a></li>
+                        </ul>
+                    </div>
+                </th>
+                <th>收货人</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <%
+                List<Order> orders = (List<Order>) request.getAttribute("orders");
+                if (orders != null && orders.size() > 0) {
 
-    <%
-        } // end for
-    } else {
-    %>
-    <p>购物车为空</p>
-    <%
-        }
-    %>
+                    for (Order order : orders) {
+            %>
 
-    <div class="jies_beij">
-        <div class="beij_center over_dis">
-            <div class="cart-col-1 cart_jies">
-                <input type="checkbox" class="jdcheckbox select-all">
-            </div>
-            <div class="qianm_shanc_yvf">
-                <span>全选</span>
-                <a href="#">删除</a>
-            </div>
-            <div class="jies_ann_bei">
-                <p>已选 <em>0</em> 件商品 总计（不含运费）：<span>￥0.00</span></p>
-                <a href="submit-order.jsp" class="order_btn">去结算</a>
-            </div>
+            <tbody>
+            <tr class="sep-row">
+                <td colspan="4"></td>
+            </tr>
+
+            <!-- 订单头部（订单时间 / 订单号 / 店铺名） -->
+            <tr class="tr-th">
+                <td colspan="5">
+                    <span class="gap"></span>
+                    <span class="dealtime span_30"><%=order.getOrdertime()%></span>
+                    <span class="number span_30">订单号：
+            <a href="order_detail.jsp?id=<%=order.getId()%>"><%=order.getId()%></a>
+        </span>
+                    <span class="span_30">眼镜商城官方旗舰店</span>
+                    <span class="wod_sc_delete_beij span_30">
+            <a href="OrderServlet?action=delete&id=<%=order.getId()%>" class="wod_dingd_delete"></a>
+        </span>
+                </td>
+            </tr>
+
+            <!-- 展示订单商品明细 -->
+            <%
+                List<OrderDetail> dList = order.getDetailList();
+                int rowSpan = dList.size();
+                boolean first = true;
+
+                for (OrderDetail d : dList) {
+                    Product p = d.getProduct();    // detail 中必须包含 product 对象
+            %>
+
+            <tr class="tr-bd">
+                <td <%= first ? "rowspan='"+rowSpan+"'" : "" %> >
+                    <div class="goods-item">
+                        <div class="p-img">
+                            <a target="_blank" href="single.jsp?id=<%=p.getId()%>">
+                                <img src="<%=p.getPic()%>" alt="">
+                            </a>
+                        </div>
+                        <div class="p-msg">
+                            <div class="p-name">
+                                <a target="_blank" href="single.jsp?id=<%=p.getId()%>"><%=p.getpName()%></a>
+                                <p class="yiwanc_hui"><a href="#">申请售后</a></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="goods-number">x<%=d.getNum()%></div>
+                </td>
+
+                <% if (first) { %>
+                <!-- 金额与状态只显示一次 -->
+                <td rowspan="<%=rowSpan%>">
+                    <div class="zhif_jine">
+<%--                        <p>总额 ¥<%=order.getTotal()%></p>--%>
+                        <span><%=order.getStatus()%></span>
+                    </div>
+                </td>
+
+                <td rowspan="<%=rowSpan%>">
+                    <div class="operate">
+                        <p class="yiwanc_hui"><%=order.getStatus()%></p>
+                        <a href="order_detail.jsp?id=<%=order.getId()%>" class="a-link">订单详情</a><br>
+                    </div>
+                </td>
+
+                <td rowspan="<%=rowSpan%>">
+                    <div class="txt_ren">
+                        <span>默认收货人</span>
+                        <p class="ren_tub"></p>
+                    </div>
+                </td>
+
+                <td rowspan="<%=rowSpan%>">
+                    <div class="operate">
+                        <a href="#" target="_blank" class="a-link">评价</a>丨
+                        <a href="#" class="a-link">晒单</a><br>
+                        <a href="single.jsp?id=<%=p.getId()%>" class="btn-def">再次购买</a>
+                    </div>
+                </td>
+                <% } %>
+
+            </tr>
+
+            <%
+                    first = false;
+                } // end detail loop
+            %>
+
+            </tbody>
+
+            <%
+                } // end order loop
+            } else {
+            %>
+
+            <tbody>
+            <tr><td colspan="5" style="text-align:center;padding:40px;">暂无订单</td></tr>
+            </tbody>
+
+            <%
+                }
+            %>
+
+        </table>
+        <div class="gerzx_fany">
+            <a href="#" class="shangxy">上一页</a>
+            <a href="#">1</a>
+            <a href="#" class="shangxy">上一页</a>
         </div>
     </div>
 </div>
+
 <div class="footer">
     <div class="footer-top">
         <div class="wrap">
@@ -424,66 +591,7 @@
     </div>
 </div>
 <div style="display:none"><script src='http://v7.cnzz.com/stat.php?id=155540&web_id=155540' language='JavaScript' charset='gb2312'></script></div>
-<script>
-    const selectedCountElement = document.querySelector('.jies_ann_bei em');
 
-
-    // 选择所有复选框
-    const selectAll = document.querySelectorAll('.select-all');
-    const itemChecks = document.querySelectorAll('.item-check');
-
-    // 用于显示总价的元素
-    const totalPriceElement = document.querySelector('.jies_ann_bei span');
-
-    // 更新总价
-    function updateTotalPrice() {
-        let total = 0;
-        let count = 0;
-
-        itemChecks.forEach(check => {
-            if (check.checked) {
-                count++;
-
-                // 找到当前商品所在的 cart-shop-good 节点
-                let totalElement = check.closest(".cart-shop-good")
-                    .querySelector(".item-total");
-
-                if (totalElement) {
-                    let t = totalElement.innerText.replace("¥", "").trim();
-                    total += parseFloat(t);
-                }
-            }
-        });
-
-        // 更新数量与总价显示
-        selectedCountElement.innerText = count;
-        totalPriceElement.innerText = "￥" + total.toFixed(2);
-    }
-
-
-    // 全选按钮逻辑
-    selectAll.forEach(allCheck => {
-        allCheck.addEventListener('change', function () {
-            itemChecks.forEach(item => item.checked = this.checked);
-            selectAll.forEach(s => s.checked = this.checked); // 多个全选保持同步
-            updateTotalPrice();
-        });
-    });
-
-    // 单选改变时更新总价 + 同步全选状态
-    itemChecks.forEach(item => {
-        item.addEventListener('change', function () {
-
-            // 判断是否全部选中
-            let allChecked = true;
-            itemChecks.forEach(c => { if (!c.checked) allChecked = false; });
-
-            selectAll.forEach(s => s.checked = allChecked);
-
-            updateTotalPrice();
-        });
-    });
-</script>
 
 </body>
 </html>

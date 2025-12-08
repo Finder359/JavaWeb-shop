@@ -8,6 +8,18 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    Map<Integer, CartItem> cart = (Map<Integer, CartItem>) session.getAttribute("cart");
+    int totalCount = 0;
+    double totalAmount = 0;
+
+    if (cart != null) {
+        for (CartItem item : cart.values()) {
+            totalCount += item.getCount();
+            totalAmount += item.getTotal();
+        }
+    }
+%>
 
 <!DOCTYPE HTML>
 <html>
@@ -20,14 +32,14 @@
     <script type="text/javascript" src="js/jquery1.min.js"></script>
     <!-- start menu -->
     <link href="css/megamenu.css" rel="stylesheet" type="text/css" media="all" />
-<%--    <script type="text/javascript" src="js/megamenu.js"></script>--%>
-<%--    <script>$(document).ready(function(){$(".megamenu").megamenu();});</script>--%>
+    <%--    <script type="text/javascript" src="js/megamenu.js"></script>--%>
+    <%--    <script>$(document).ready(function(){$(".megamenu").megamenu();});</script>--%>
     <!-- dropdown -->
     <script src="js/jquery.easydropdown.js"></script>
 
     <link rel="stylesheet" type="text/css" href="css/index.css">
     <link rel="stylesheet" type="text/css" href="css/ziy.css">
-<%--    <script type="text/javascript" src="js/jquery1.42.min.js"></script>--%>
+    <%--    <script type="text/javascript" src="js/jquery1.42.min.js"></script>--%>
     <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
     <script type="text/javascript" src="js/jquery.SuperSlide.2.1.1.source.js"></script>
     <script type="text/javascript" src="js/select.js"></script>
@@ -211,101 +223,104 @@
         <div class="clear"></div>
     </div>
 </div>
-<div class="register_account">
-    <div class="beij_center">
-        <div class="cart-main-header clearfix">
-            <div class="cart-col-1">
-                <input type="checkbox" class="jdcheckbox select-all">
-            </div>
-            <div class="cart-col-2">全选</div>
-            <div class="cart-col-3">商品信息</div>
-            <div class="cart-col-4">
-                <div class="cart-good-real-price">单价</div>
-            </div>
-            <div class="cart-col-5">数量</div>
-            <div class="cart-col-6">
-                <div class="cart-good-amount">小计</div>
-            </div>
-            <div class="cart-col-7">操作</div>
-        </div>
+<style>
+    .order-success-box {
+        width: 70%;
+        margin: 40px auto;
+        padding: 30px 40px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        text-align: center;
+        animation: fadeIn 0.5s ease;
+    }
+
+    .order-success-icon {
+        font-size: 70px;
+        color: #4CAF50;
+        margin-bottom: 15px;
+    }
+
+    .order-success-title {
+        font-size: 26px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .order-success-desc {
+        font-size: 16px;
+        color: #666;
+        margin-bottom: 25px;
+        line-height: 1.6;
+    }
+
+    .order-info-box {
+        display: inline-block;
+        padding: 15px 25px;
+        background: #f7f7f7;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        text-align: left;
+        line-height: 1.8;
+        font-size: 15px;
+        color: #444;
+    }
+
+    .order-btn-group a {
+        display: inline-block;
+        padding: 12px 26px;
+        margin: 0 10px;
+        font-size: 15px;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+        background: #ff4400;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #e03a00;
+    }
+
+    .btn-secondary {
+        border: 1px solid #ccc;
+        color: #666;
+    }
+
+    .btn-secondary:hover {
+        background: #f2f2f2;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px);}
+        to { opacity: 1; transform: translateY(0);}
+    }
+</style>
+
+<div class="order-success-box">
+    <div class="order-success-icon">✔</div>
+    <div class="order-success-title">订单提交成功！</div>
+    <div class="order-success-desc">
+        感谢您的信任，我们已成功收到您的订单。<br>
+        可在「我的订单」中查看详情。
     </div>
-    <%
-        Map<Integer, CartItem> cart = (Map<Integer, CartItem>) session.getAttribute("cart");
-        if (cart != null && cart.size() > 0) {
 
-            for (CartItem item : cart.values()) {
-                Product p = item.getProduct();
-    %>
+    <div class="order-info-box">
+        <div>订单编号：<strong><%=request.getParameter("id")%></strong></div>
+        <div>付款方式：在线支付</div>
 
-    <div class="cart-shop-good">
-        <div class="cart-col-1">
-            <input type="checkbox" class="jdcheckbox item-check">
-        </div>
-        <div class="cart-col-2" style="height: 82px;">
-            <a href="single.jsp?id=<%=p.getId()%>" class="g-img">
-                <img src="<%=p.getPic()%>" alt="">
-            </a>
-        </div>
-        <div class="fl houj_c">
-            <div class="cart-dfsg">
-                <div class="cart-good-name">
-                    <a href="single.jsp?id=<%=p.getId()%>"><%=p.getpName()%></a>
-                </div>
-            </div>
-
-            <div class="cart-col-4">
-                <div class="cart-good-real-price">
-                    ¥&nbsp;<%=p.getPrice()%>
-                </div>
-            </div>
-
-            <div class="cart-col-5">
-                <div class="gui-count cart-count">
-                    <a href="CartServlet?action=sub&id=<%=p.getId()%>" class="gui-count-btn gui-count-sub">-</a>
-                    <a href="CartServlet?action=add&id=<%=p.getId()%>" class="gui-count-btn gui-count-add">+</a>
-                    <div class="gui-count-input"><input type="text" value="<%=item.getCount()%>"></div>
-                </div>
-            </div>
-
-            <div class="cart-col-6 ">
-                <div class="cart-good-amount item-total">¥&nbsp;<%=item.getTotal()%></div>
-            </div>
-        </div>
-        <div class="cart-col-7">
-            <div class="cart-good-fun delfixed">
-                <a href="CartServlet?action=delete&id=<%=p.getId()%>">删除</a>
-            </div>
-            <div class="cart-good-fun">
-                <a href="#">移入收藏夹</a>
-            </div>
-        </div>
     </div>
 
-    <%
-        } // end for
-    } else {
-    %>
-    <p>购物车为空</p>
-    <%
-        }
-    %>
-
-    <div class="jies_beij">
-        <div class="beij_center over_dis">
-            <div class="cart-col-1 cart_jies">
-                <input type="checkbox" class="jdcheckbox select-all">
-            </div>
-            <div class="qianm_shanc_yvf">
-                <span>全选</span>
-                <a href="#">删除</a>
-            </div>
-            <div class="jies_ann_bei">
-                <p>已选 <em>0</em> 件商品 总计（不含运费）：<span>￥0.00</span></p>
-                <a href="submit-order.jsp" class="order_btn">去结算</a>
-            </div>
-        </div>
+    <div class="order-btn-group">
+        <a href="index.jsp" class="btn-primary">返回首页</a>
+        <a href="OrderListServlet" class="btn-secondary">查看订单</a>
     </div>
 </div>
+
 <div class="footer">
     <div class="footer-top">
         <div class="wrap">
@@ -424,66 +439,6 @@
     </div>
 </div>
 <div style="display:none"><script src='http://v7.cnzz.com/stat.php?id=155540&web_id=155540' language='JavaScript' charset='gb2312'></script></div>
-<script>
-    const selectedCountElement = document.querySelector('.jies_ann_bei em');
-
-
-    // 选择所有复选框
-    const selectAll = document.querySelectorAll('.select-all');
-    const itemChecks = document.querySelectorAll('.item-check');
-
-    // 用于显示总价的元素
-    const totalPriceElement = document.querySelector('.jies_ann_bei span');
-
-    // 更新总价
-    function updateTotalPrice() {
-        let total = 0;
-        let count = 0;
-
-        itemChecks.forEach(check => {
-            if (check.checked) {
-                count++;
-
-                // 找到当前商品所在的 cart-shop-good 节点
-                let totalElement = check.closest(".cart-shop-good")
-                    .querySelector(".item-total");
-
-                if (totalElement) {
-                    let t = totalElement.innerText.replace("¥", "").trim();
-                    total += parseFloat(t);
-                }
-            }
-        });
-
-        // 更新数量与总价显示
-        selectedCountElement.innerText = count;
-        totalPriceElement.innerText = "￥" + total.toFixed(2);
-    }
-
-
-    // 全选按钮逻辑
-    selectAll.forEach(allCheck => {
-        allCheck.addEventListener('change', function () {
-            itemChecks.forEach(item => item.checked = this.checked);
-            selectAll.forEach(s => s.checked = this.checked); // 多个全选保持同步
-            updateTotalPrice();
-        });
-    });
-
-    // 单选改变时更新总价 + 同步全选状态
-    itemChecks.forEach(item => {
-        item.addEventListener('change', function () {
-
-            // 判断是否全部选中
-            let allChecked = true;
-            itemChecks.forEach(c => { if (!c.checked) allChecked = false; });
-
-            selectAll.forEach(s => s.checked = allChecked);
-
-            updateTotalPrice();
-        });
-    });
-</script>
 
 </body>
 </html>
