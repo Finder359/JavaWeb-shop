@@ -12,5 +12,8 @@ public interface OrderDao {
     void addOrderDetail(OrderDetail detail);
     List<Order> queryByUserId(int userId);
     Order queryById(int id);
+    int getRecordCount();
+    List<Order> queryPage(int page, int pageSize);
+    int getPageCount(int pageSize);
 
 }

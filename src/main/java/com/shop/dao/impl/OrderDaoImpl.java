@@ -80,7 +80,11 @@ public class OrderDaoImpl implements OrderDao {
         List<Order> list = new ArrayList<>();
         conn = DBUtil.getConn();
 
-        String sql = "SELECT * FROM order_info WHERE userId = ? ORDER BY ordertime DESC";
+        String sql = "SELECT o.*, u.userName" +
+                "FROM order_info o" +
+                "LEFT JOIN user_info u ON o.userId = u.id" +
+                "WHERE userId = ?" +
+                "ORDER BY ordertime DESC";
 
         try {
             ps = conn.prepareStatement(sql);
@@ -91,6 +95,7 @@ public class OrderDaoImpl implements OrderDao {
                 Order o = new Order();
                 o.setId(rs.getInt("id"));
                 o.setUserId(rs.getInt("userId"));
+                o.setUserName(rs.getString("userName"));
                 o.setStatus(rs.getString("status"));
                 o.setOrdertime(rs.getTimestamp("ordertime"));
 
@@ -120,7 +125,9 @@ public class OrderDaoImpl implements OrderDao {
         Order order = null;
         conn = DBUtil.getConn();
 
-        String sql = "SELECT * FROM order_info WHERE id = ?";
+        String sql = "SELECT o.*, u.userName " +
+                "FROM order_info o LEFT JOIN user_info u ON o.userId = u.id " +
+                "WHERE o.id = ?";
 
         try {
             ps = conn.prepareStatement(sql);
@@ -131,6 +138,7 @@ public class OrderDaoImpl implements OrderDao {
                 order = new Order();
                 order.setId(rs.getInt("id"));
                 order.setUserId(rs.getInt("userId"));
+                order.setUserName(rs.getString("userName"));
                 order.setStatus(rs.getString("status"));
                 order.setOrdertime(rs.getTimestamp("ordertime"));
 
@@ -155,5 +163,93 @@ public class OrderDaoImpl implements OrderDao {
 
         return order;
     }
+
+    @Override
+    public int getRecordCount() {
+        int count = 0;
+        conn = DBUtil.getConn();
+
+        String sql = "SELECT COUNT(*) FROM order_info";
+
+        try {
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+
+        } finally {
+            DBUtil.close(rs, ps, conn);
+        }
+
+        return count;
+    }
+
+
+    @Override
+    public List<Order> queryPage(int page, int pageSize) {
+
+        List<Order> list = new ArrayList<>();
+        conn = DBUtil.getConn();
+
+        int offset = (page - 1) * pageSize;
+
+        String sql =
+                "SELECT o.*, u.userName " +
+                        "FROM order_info o " +
+                        "LEFT JOIN user_info u ON o.userId = u.id " +
+                        "ORDER BY o.ordertime DESC " +
+                        "LIMIT ?, ?";
+
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, offset);
+            ps.setInt(2, pageSize);
+
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                Order o = new Order();
+                o.setId(rs.getInt("id"));
+                o.setUserId(rs.getInt("userId"));
+                o.setUserName(rs.getString("userName"));
+                o.setStatus(rs.getString("status"));
+                o.setOrdertime(rs.getTimestamp("ordertime"));
+
+                // ① 查订单详情
+                List<OrderDetail> detailList = orderDetailDao.queryByOrderId(o.getId());
+
+                // ② 为每条详情补 Product 对象（你已经写了 productDao）
+                for (OrderDetail d : detailList) {
+                    Product p = productDao.queryById(d.getProductId());
+                    d.setProduct(p);
+                }
+
+                o.setDetailList(detailList);
+                list.add(o);
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+
+        } finally {
+            DBUtil.close(rs, ps, conn);
+        }
+
+        return list;
+    }
+
+
+    @Override
+    public int getPageCount(int pageSize) {
+        int count = getRecordCount();
+        return (count + pageSize - 1) / pageSize;  // 向上取整
+    }
+
 
 }

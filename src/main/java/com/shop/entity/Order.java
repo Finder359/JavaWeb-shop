@@ -10,6 +10,7 @@ public class Order {
     private String status;
     private Timestamp ordertime;
     private List<OrderDetail> detailList;
+    private String userName;
 
     public int getId() {
         return id;
@@ -45,6 +46,14 @@ public class Order {
 
     public void setDetailList(List<OrderDetail> detailList) {
         this.detailList = detailList;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }
 
