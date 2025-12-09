@@ -20,7 +20,29 @@ public class AdminOrderServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
+        String op = req.getParameter("op");
 
+        if ("delete".equals(op)) {
+            delete(req, resp);
+            return;
+        }
+
+        if ("detail".equals(op)) {
+            showDetail(req, resp);
+            return;
+        }
+
+        if ("updateStatus".equals(op)) {
+            updateStatus(req, resp);
+            return;
+        }
+
+
+        list(req, resp);  // 默认显示列表
+
+    }
+
+    private void list(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         int page = 1;
         int pageSize = 10;  // 每页显示 10 条
 
@@ -36,4 +58,39 @@ public class AdminOrderServlet extends HttpServlet {
 
         req.getRequestDispatcher("/admin/ListOrder.jsp").forward(req, resp);
     }
+
+    private void delete(HttpServletRequest req, HttpServletResponse resp)
+            throws IOException {
+
+        int id = Integer.parseInt(req.getParameter("id"));
+
+        int n = orderDao.delete(id);
+
+        // 删除成功后刷新列表
+        resp.sendRedirect("AdminOrderServlet");
+    }
+
+    private void showDetail(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+
+        int id = Integer.parseInt(req.getParameter("id"));
+        Order order = orderDao.queryById(id);
+
+        req.setAttribute("order", order);
+        req.getRequestDispatcher("/admin/OrderDetail.jsp").forward(req, resp);
+    }
+
+    private void updateStatus(HttpServletRequest req, HttpServletResponse resp)
+            throws IOException {
+
+        int id = Integer.parseInt(req.getParameter("id"));
+        String status = req.getParameter("status");
+
+        orderDao.updateStatus(id, status);
+
+        resp.sendRedirect("AdminOrderServlet?op=detail&id=" + id);
+    }
+
+
+
 }

@@ -80,10 +80,10 @@ public class OrderDaoImpl implements OrderDao {
         List<Order> list = new ArrayList<>();
         conn = DBUtil.getConn();
 
-        String sql = "SELECT o.*, u.userName" +
-                "FROM order_info o" +
-                "LEFT JOIN user_info u ON o.userId = u.id" +
-                "WHERE userId = ?" +
+        String sql = "SELECT o.*, u.userName " +
+                "FROM order_info o " +
+                "LEFT JOIN user_info u ON o.userId = u.id " +
+                "WHERE userId = ? " +
                 "ORDER BY ordertime DESC";
 
         try {
@@ -249,6 +249,56 @@ public class OrderDaoImpl implements OrderDao {
     public int getPageCount(int pageSize) {
         int count = getRecordCount();
         return (count + pageSize - 1) / pageSize;  // 向上取整
+    }
+
+    @Override
+    public int delete(int id) {
+        int n = 0;
+        conn = DBUtil.getConn();
+
+        try {
+
+            // 1. 删除订单详情（子表）
+            String sqlDetail = "DELETE FROM order_detail WHERE o_id = ?";
+            ps = conn.prepareStatement(sqlDetail);
+            ps.setInt(1, id);
+            ps.executeUpdate();
+            ps.close();
+
+            // 2. 删除订单主表（父表）
+            String sqlOrder = "DELETE FROM order_info WHERE id = ?";
+            ps = conn.prepareStatement(sqlOrder);
+            ps.setInt(1, id);
+            n = ps.executeUpdate();
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            DBUtil.close(ps, conn);
+        }
+
+        return n;   // n > 0 表示删除成功
+    }
+
+    @Override
+    public int updateStatus(int id, String status) {
+        int n = 0;
+        conn = DBUtil.getConn();
+
+        String sql = "UPDATE order_info SET status = ? WHERE id = ?";
+
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, status);
+            ps.setInt(2, id);
+            n = ps.executeUpdate();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            DBUtil.close(ps, conn);
+        }
+
+        return n;
     }
 
 

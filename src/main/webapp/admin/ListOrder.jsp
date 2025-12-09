@@ -144,10 +144,10 @@
                 <!-- 操作按钮 -->
                 <td>
                     <div class="button-group">
-                        <a class="button border-main" href="OrderServlet?op=showDetail&id=<%=order.getId()%>">
+                        <a class="button border-main" href="AdminOrderServlet?op=detail&id=<%=order.getId()%>">
                             <span class="icon-search"></span> 详情
                         </a>
-                        <a class="button border-red" href="OrderServlet?op=delete&id=<%=order.getId()%>"
+                        <a class="button border-red" href="AdminOrderServlet?op=delete&id=<%=order.getId()%>"
                            onclick="return del(1,1,1)">
                             <span class="icon-trash-o"></span> 删除
                         </a>

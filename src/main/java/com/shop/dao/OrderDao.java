@@ -15,5 +15,7 @@ public interface OrderDao {
     int getRecordCount();
     List<Order> queryPage(int page, int pageSize);
     int getPageCount(int pageSize);
+    int delete(int id);
+    int updateStatus(int id, String status);
 
 }
