@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class FrontUserDaoImpl implements FrontUserDao {
 
@@ -180,4 +181,41 @@ public class FrontUserDaoImpl implements FrontUserDao {
 
         return result;
     }
+
+    @Override
+    public ArrayList<FrontUser> queryAll() {
+
+        ArrayList<FrontUser> list = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement ps=null;
+        ResultSet rs=null;
+        conn = DBUtil.getConn();
+
+        String sql = "SELECT * FROM user_info ORDER BY id DESC";
+
+        try {
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                FrontUser u = new FrontUser();
+                u.setId(rs.getInt("id"));
+                u.setUsername(rs.getString("userName"));
+                u.setPassword(rs.getString("password"));
+                u.setRealName(rs.getString("realName"));
+                u.setSex(rs.getString("sex"));
+                u.setTel(rs.getString("tel"));
+                u.setAddress(rs.getString("address"));
+                list.add(u);
+            }
+
+        } catch(Exception e){
+            throw new RuntimeException(e);
+        } finally {
+            DBUtil.close(rs, ps, conn);
+        }
+
+        return list;
+    }
+
 }

@@ -2,6 +2,8 @@ package com.shop.dao;
 
 import com.shop.entity.FrontUser;
 
+import java.util.ArrayList;
+
 public interface FrontUserDao {
 
     /**
@@ -39,4 +41,5 @@ public interface FrontUserDao {
      * @return 影响的行数
      */
     int update(FrontUser user);
+    ArrayList<FrontUser> queryAll();
 }

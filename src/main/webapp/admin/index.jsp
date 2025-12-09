@@ -57,7 +57,7 @@
     </ul>
     <h2><span class="icon-pencil-square-o"></span>会员管理</h2>
     <ul>
-        <li><a href="list.html" target="right"><span class="icon-caret-right"></span>会员管理</a></li>
+        <li><a href="AdminFrontUserServlet" target="right"><span class="icon-caret-right"></span>会员管理</a></li>
         <li><a href="add.html" target="right"><span class="icon-caret-right"></span>添加会员</a></li>
 
     </ul>
