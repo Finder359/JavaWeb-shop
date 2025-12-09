@@ -88,7 +88,7 @@ public class AdminFrontUserServlet extends HttpServlet {
 //        frontUserDao.insert(u);
         //暂未实现
 
-        resp.sendRedirect("FrontUserServlet"); // 回列表页
+        resp.sendRedirect("AdminFrontUserServlet"); // 回列表页
     }
 
 
@@ -101,7 +101,7 @@ public class AdminFrontUserServlet extends HttpServlet {
         FrontUser u = frontUserDao.findById(id);
 
         req.setAttribute("user", u);
-        req.getRequestDispatcher("/admin/FrontUserEdit.jsp").forward(req, resp);
+        req.getRequestDispatcher("/admin/EditFrontUser.jsp").forward(req, resp);
     }
 
 
@@ -118,10 +118,14 @@ public class AdminFrontUserServlet extends HttpServlet {
         u.setSex(req.getParameter("sex"));
         u.setTel(req.getParameter("tel"));
         u.setAddress(req.getParameter("address"));
+        u.setFavorate(req.getParameter("favorate"));
+        String vip = req.getParameter("vip");
+        u.setVip(vip == null ? 0 : 1);
+
 
         frontUserDao.update(u);
 
-        resp.sendRedirect("FrontUserServlet");
+        resp.sendRedirect("AdminFrontUserServlet");
     }
 
 
@@ -132,6 +136,6 @@ public class AdminFrontUserServlet extends HttpServlet {
         int id = Integer.parseInt(req.getParameter("id"));
 //        frontUserDao.delete(id);
 //暂未实现
-        resp.sendRedirect("FrontUserServlet");
+        resp.sendRedirect("AdminFrontUserServlet");
     }
 }

@@ -52,7 +52,7 @@
     <h2><span class="icon-pencil-square-o"></span>订单管理</h2>
     <ul>
         <li><a href="AdminOrderServlet" target="right"><span class="icon-caret-right"></span>订单管理</a></li>
-        <li><a href="add.html" target="right"><span class="icon-caret-right"></span>添加订单</a></li>
+        <li><a href="NewOrder.jsp" target="right"><span class="icon-caret-right"></span>添加订单</a></li>
 
     </ul>
     <h2><span class="icon-pencil-square-o"></span>会员管理</h2>

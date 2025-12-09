@@ -147,6 +147,10 @@ public class FrontUserDaoImpl implements FrontUserDao {
                 user.setAddress(rs.getString("address"));
                 user.setTel(rs.getString("tel"));
                 user.setScore(rs.getInt("score"));
+                user.setSex(rs.getString("sex"));
+                user.setFavorate(rs.getString("favorate"));
+                user.setRegDate(rs.getDate("regDate"));
+                user.setVip(rs.getInt("vip"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -159,7 +163,11 @@ public class FrontUserDaoImpl implements FrontUserDao {
 
     @Override
     public int update(FrontUser user) {
-        String sql = "UPDATE user_info SET realName = ?, tel = ?, address = ? WHERE id = ?";
+
+        String sql = "UPDATE user_info " +
+                "SET userName = ?, realName = ?, sex = ?, tel = ?, address = ?, favorate = ?, vip = ? " +
+                "WHERE id = ?";
+
         Connection conn = null;
         PreparedStatement pst = null;
         int result = 0;
@@ -167,12 +175,18 @@ public class FrontUserDaoImpl implements FrontUserDao {
         try {
             conn = DBUtil.getConn();
             pst = conn.prepareStatement(sql);
-            pst.setString(1, user.getRealName());
-            pst.setString(2, user.getTel());
-            pst.setString(3, user.getAddress());
-            pst.setInt(4, user.getId());
+
+            pst.setString(1, user.getUsername());
+            pst.setString(2, user.getRealName());
+            pst.setString(3, user.getSex());
+            pst.setString(4, user.getTel());
+            pst.setString(5, user.getAddress());
+            pst.setString(6, user.getFavorate());
+            pst.setInt(7, user.getVip());   // 0 or 1
+            pst.setInt(8, user.getId());
 
             result = pst.executeUpdate();
+
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -181,6 +195,7 @@ public class FrontUserDaoImpl implements FrontUserDao {
 
         return result;
     }
+
 
     @Override
     public ArrayList<FrontUser> queryAll() {

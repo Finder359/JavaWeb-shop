@@ -94,7 +94,7 @@
                     <td><%=u.getRealName()%></td>
                     <td><%=u.getSex()%></td>
                     <td><%=u.getTel()%></td>
-                    <td><div class="button-group"> <a class="button border-main" href="AdminFrontUserServlet?op=showEdit&id=<%=u.getId()%>"><span class="icon-edit"></span> 修改</a> <a class="button border-red" href="AdminFrontUserServlet?op=delete&id=<%=u.getId()%>" onclick="return del(1,1,1)"><span class="icon-trash-o"></span> 删除</a> </div></td>
+                    <td><div class="button-group"> <a class="button border-main" href="AdminFrontUserServlet?op=edit&id=<%=u.getId()%>"><span class="icon-edit"></span> 修改</a> <a class="button border-red" href="AdminFrontUserServlet?op=delete&id=<%=u.getId()%>" onclick="return del(1,1,1)"><span class="icon-trash-o"></span> 删除</a> </div></td>
                 </tr>
 <%
                     }

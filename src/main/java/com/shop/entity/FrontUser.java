@@ -16,7 +16,7 @@ public class FrontUser {
     private Integer score;
     private Date regDate;
     private Integer status;
-    private Integer vip;
+    private int vip;
 
     // 无参构造
     public FrontUser() {
@@ -145,11 +145,12 @@ public class FrontUser {
     public void setStatus(Integer status) {
         this.status = status;
     }
-    public Integer getVip() {
+
+    public int getVip() {
         return vip;
     }
 
-    public void setVip(Integer vip) {
+    public void setVip(int vip) {
         this.vip = vip;
     }
 

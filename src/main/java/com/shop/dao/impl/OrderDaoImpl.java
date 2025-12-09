@@ -23,6 +23,7 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public int createOrder(Order order) {
+        conn = DBUtil.getConn();
 
 
         String sql = "INSERT INTO order_info(userId, status, ordertime) VALUES (?, ?, ?)";
