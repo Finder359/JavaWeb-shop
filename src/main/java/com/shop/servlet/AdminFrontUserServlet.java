@@ -84,12 +84,20 @@ public class AdminFrontUserServlet extends HttpServlet {
         u.setSex(req.getParameter("sex"));
         u.setTel(req.getParameter("tel"));
         u.setAddress(req.getParameter("address"));
+        u.setFavorate(req.getParameter("favorate"));
 
-//        frontUserDao.insert(u);
-        //暂未实现
+        // VIP 状态
+        String vipParam = req.getParameter("vip");
+        u.setVip(vipParam == null ? 0 : 1);
 
-        resp.sendRedirect("AdminFrontUserServlet"); // 回列表页
+        // 注册时间
+        u.setRegDate(new java.sql.Date(System.currentTimeMillis()));
+
+        frontUserDao.insert(u);
+
+        resp.sendRedirect("AdminFrontUserServlet");
     }
+
 
 
     // ------------------------- 显示编辑页面 --------------------------
@@ -134,8 +142,7 @@ public class AdminFrontUserServlet extends HttpServlet {
             throws IOException {
 
         int id = Integer.parseInt(req.getParameter("id"));
-//        frontUserDao.delete(id);
-//暂未实现
+        frontUserDao.delete(id);
         resp.sendRedirect("AdminFrontUserServlet");
     }
 }

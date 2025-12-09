@@ -22,72 +22,63 @@
     <script src="js/pintuer.js"></script>
 </head>
 <body>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 <div class="panel admin-panel">
     <div class="panel-head" id="add">
-        <strong><span class="icon-pencil-square-o"></span> 修改前台用户信息</strong>
+        <strong><span class="icon-plus-square-o"></span> 添加前台用户</strong>
     </div>
 
     <div class="body-content">
 
-        <!-- 注意：此处更新的 Servlet 已经是 FrontUserServlet -->
-        <form method="post" class="form-x" action="AdminFrontUserServlet?op=update">
-
-            <!-- ID（不可编辑） -->
-            <div class="form-group">
-                <div class="label"><label>ID</label></div>
-                <div class="field">
-                    <input type="text" class="input w50"
-                           value="<%=user.getId()%>"
-                           readonly="readonly" />
-
-                    <!-- 仍需要隐藏 id 传给后端 -->
-                    <input type="hidden" name="id" value="<%=user.getId()%>">
-                </div>
-            </div>
+        <!-- 注意：新增用户提交到 FrontUserServlet?op=save -->
+        <form method="post" class="form-x" action="AdminFrontUserServlet?op=save">
 
             <!-- 用户名 -->
             <div class="form-group">
-                <div class="label"><label>用户名</label></div>
+                <div class="label">
+                    <label>用户名</label>
+                </div>
                 <div class="field">
                     <input type="text" class="input w50"
                            name="userName"
-                           value="<%=user.getUsername()%>"
                            data-validate="required:用户名不能为空" />
                 </div>
             </div>
 
-            <!-- 修改密码 -->
+            <!-- 密码 -->
             <div class="form-group">
                 <div class="label">
-                    <label>新密码</label>
+                    <label>密码</label>
                 </div>
                 <div class="field">
                     <input type="password" class="input w50"
                            name="password"
-                           placeholder="不修改请留空" />
-                    <div class="tips">如果不需要修改密码，请留空。</div>
+                           data-validate="required:密码不能为空" />
                 </div>
             </div>
 
-            <!-- 确认新密码 -->
+            <!-- 确认密码 -->
             <div class="form-group">
                 <div class="label">
-                    <label>确认新密码</label>
+                    <label>确认密码</label>
                 </div>
                 <div class="field">
                     <input type="password" class="input w50"
                            name="repassword"
-                           placeholder="再次输入新密码" />
+                           data-validate="required:请再次输入密码,repeat#password:两次输入的密码不一致" />
                 </div>
             </div>
 
             <!-- 真实姓名 -->
             <div class="form-group">
-                <div class="label"><label>真实姓名</label></div>
+                <div class="label">
+                    <label>真实姓名</label>
+                </div>
                 <div class="field">
                     <input type="text" class="input w50"
                            name="realName"
-                           value="<%=user.getRealName()%>" />
+                           placeholder="可不填" />
                 </div>
             </div>
 
@@ -95,19 +86,9 @@
             <div class="form-group">
                 <div class="label"><label>性别</label></div>
                 <div class="field">
-                    <input type="radio" name="sex" value="男" <%="男".equals(user.getSex())?"checked":""%>> 男
+                    <input type="radio" name="sex" value="男" checked> 男
                     &nbsp;&nbsp;
-                    <input type="radio" name="sex" value="女" <%="女".equals(user.getSex())?"checked":""%>> 女
-                </div>
-            </div>
-
-            <!-- 地址 -->
-            <div class="form-group">
-                <div class="label"><label>地址</label></div>
-                <div class="field">
-                    <input type="text" class="input w50"
-                           name="address"
-                           value="<%=user.getAddress()%>" />
+                    <input type="radio" name="sex" value="女"> 女
                 </div>
             </div>
 
@@ -117,7 +98,17 @@
                 <div class="field">
                     <input type="text" class="input w50"
                            name="tel"
-                           value="<%=user.getTel()%>" />
+                           placeholder="联系电话（可选）" />
+                </div>
+            </div>
+
+            <!-- 地址 -->
+            <div class="form-group">
+                <div class="label"><label>地址</label></div>
+                <div class="field">
+                    <input type="text" class="input w50"
+                           name="address"
+                           placeholder="收货地址（可选）" />
                 </div>
             </div>
 
@@ -127,17 +118,7 @@
                 <div class="field">
                     <input type="text" class="input w50"
                            name="favorate"
-                           value="<%=user.getFavorate()%>" />
-                </div>
-            </div>
-
-            <!-- 注册时间（只读） -->
-            <div class="form-group">
-                <div class="label"><label>注册时间</label></div>
-                <div class="field">
-                    <input type="text" class="input w50"
-                           value="<%=user.getRegDate()%>"
-                           readonly="readonly" />
+                           placeholder="可不填" />
                 </div>
             </div>
 
@@ -145,9 +126,7 @@
             <div class="form-group">
                 <div class="label"><label>VIP 状态</label></div>
                 <div class="field">
-                    <input type="checkbox" name="vip" value="1"
-                        <%=user.getVip() == 1 ? "checked" : ""%> >
-                    是否为 VIP 用户
+                    <input type="checkbox" name="vip" value="1"> 设为 VIP 用户
                 </div>
             </div>
 
@@ -156,14 +135,16 @@
                 <div class="label"></div>
                 <div class="field">
                     <button class="button bg-main icon-check-square-o" type="submit">
-                        保存修改
+                        添加用户
                     </button>
                 </div>
             </div>
 
         </form>
+
     </div>
 </div>
+
 
 </body>
 </html>

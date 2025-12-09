@@ -94,7 +94,7 @@
                     <td><%=u.getRealName()%></td>
                     <td><%=u.getSex()%></td>
                     <td><%=u.getTel()%></td>
-                    <td><div class="button-group"> <a class="button border-main" href="AdminFrontUserServlet?op=edit&id=<%=u.getId()%>"><span class="icon-edit"></span> 修改</a> <a class="button border-red" href="AdminFrontUserServlet?op=delete&id=<%=u.getId()%>" onclick="return del(1,1,1)"><span class="icon-trash-o"></span> 删除</a> </div></td>
+                    <td><div class="button-group"> <a class="button border-main" href="AdminFrontUserServlet?op=edit&id=<%=u.getId()%>"><span class="icon-edit"></span> 修改</a> <a class="button border-red" href="AdminFrontUserServlet?op=delete&id=<%=u.getId()%>" onclick="return confirm('确认删除该用户吗？');"><span class="icon-trash-o"></span> 删除</a> </div></td>
                 </tr>
 <%
                     }
@@ -138,44 +138,44 @@
                 </tr>
                 <tr>
                     <td colspan="8">
-                        <div class="pagelist">
+<%--                        <div class="pagelist">--%>
 
-                            <% int current = (int) request.getAttribute("currentPage");
-                                int total = (int) request.getAttribute("pageCount");
-                            %>
+<%--                            <% int current = (int) request.getAttribute("currentPage");--%>
+<%--                                int total = (int) request.getAttribute("pageCount");--%>
+<%--                            %>--%>
 
-                            <!-- 上一页 -->
-                            <%
-                                if(current > 1){
-                            %>
-                            <a href="AdminFrontUserServlet?op=queryAll&page=<%=current-1%>">上一页</a>
-                            <% } else { %>
-                            <span class="disabled">上一页</span>
-                            <% } %>
+<%--                            <!-- 上一页 -->--%>
+<%--                            <%--%>
+<%--                                if(current > 1){--%>
+<%--                            %>--%>
+<%--                            <a href="AdminFrontUserServlet?op=queryAll&page=<%=current-1%>">上一页</a>--%>
+<%--                            <% } else { %>--%>
+<%--                            <span class="disabled">上一页</span>--%>
+<%--                            <% } %>--%>
 
-                            <!-- 中间页码 -->
-                            <%
-                                for(int i = 1; i <= total; i++){
-                                    if(i == current){
-                            %>
-                            <span class="current"><%=i%></span>
-                            <%  } else { %>
-                            <a href="AdminFrontUserServlet?op=queryAll&page=<%=i%>"><%=i%></a>
-                            <%
-                                    }
-                                }
-                            %>
+<%--                            <!-- 中间页码 -->--%>
+<%--                            <%--%>
+<%--                                for(int i = 1; i <= total; i++){--%>
+<%--                                    if(i == current){--%>
+<%--                            %>--%>
+<%--                            <span class="current"><%=i%></span>--%>
+<%--                            <%  } else { %>--%>
+<%--                            <a href="AdminFrontUserServlet?op=queryAll&page=<%=i%>"><%=i%></a>--%>
+<%--                            <%--%>
+<%--                                    }--%>
+<%--                                }--%>
+<%--                            %>--%>
 
-                            <!-- 下一页 -->
-                            <%
-                                if(current < total){
-                            %>
-                            <a href="AdminFrontUserServlet?op=queryAll&page=<%=current+1%>">下一页</a>
-                            <% } else { %>
-                            <span class="disabled">下一页</span>
-                            <% } %>
+<%--                            <!-- 下一页 -->--%>
+<%--                            <%--%>
+<%--                                if(current < total){--%>
+<%--                            %>--%>
+<%--                            <a href="AdminFrontUserServlet?op=queryAll&page=<%=current+1%>">下一页</a>--%>
+<%--                            <% } else { %>--%>
+<%--                            <span class="disabled">下一页</span>--%>
+<%--                            <% } %>--%>
 
-                        </div>
+<%--                        </div>--%>
                     </td>
                 </tr>
 

@@ -42,4 +42,6 @@ public interface FrontUserDao {
      */
     int update(FrontUser user);
     ArrayList<FrontUser> queryAll();
+    int insert(FrontUser user);
+    int delete(int id);
 }

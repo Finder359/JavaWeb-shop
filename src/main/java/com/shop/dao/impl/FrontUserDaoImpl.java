@@ -164,26 +164,41 @@ public class FrontUserDaoImpl implements FrontUserDao {
     @Override
     public int update(FrontUser user) {
 
-        String sql = "UPDATE user_info " +
-                "SET userName = ?, realName = ?, sex = ?, tel = ?, address = ?, favorate = ?, vip = ? " +
-                "WHERE id = ?";
-
         Connection conn = null;
         PreparedStatement pst = null;
+
         int result = 0;
 
         try {
             conn = DBUtil.getConn();
-            pst = conn.prepareStatement(sql);
 
-            pst.setString(1, user.getUsername());
-            pst.setString(2, user.getRealName());
-            pst.setString(3, user.getSex());
-            pst.setString(4, user.getTel());
-            pst.setString(5, user.getAddress());
-            pst.setString(6, user.getFavorate());
-            pst.setInt(7, user.getVip());   // 0 or 1
-            pst.setInt(8, user.getId());
+            StringBuilder sql = new StringBuilder(
+                    "UPDATE user_info SET userName=?, realName=?, sex=?, tel=?, address=?, favorate=?, vip=?"
+            );
+
+            // 动态追加密码字段
+            if (user.getPassword() != null) {
+                sql.append(", password=?");
+            }
+
+            sql.append(" WHERE id=?");
+
+            pst = conn.prepareStatement(sql.toString());
+
+            int idx = 1;
+            pst.setString(idx++, user.getUsername());
+            pst.setString(idx++, user.getRealName());
+            pst.setString(idx++, user.getSex());
+            pst.setString(idx++, user.getTel());
+            pst.setString(idx++, user.getAddress());
+            pst.setString(idx++, user.getFavorate());
+            pst.setInt(idx++, user.getVip());
+
+            if (user.getPassword() != null) {
+                pst.setString(idx++, user.getPassword());
+            }
+
+            pst.setInt(idx++, user.getId());
 
             result = pst.executeUpdate();
 
@@ -195,6 +210,7 @@ public class FrontUserDaoImpl implements FrontUserDao {
 
         return result;
     }
+
 
 
     @Override
@@ -232,5 +248,68 @@ public class FrontUserDaoImpl implements FrontUserDao {
 
         return list;
     }
+
+    @Override
+    public int insert(FrontUser user) {
+
+        String sql = "INSERT INTO user_info " +
+                "(userName, password, realName, sex, address, tel, favorate, regDate, vip) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        Connection conn = null;
+        PreparedStatement pst = null;
+        int result = 0;
+
+        try {
+            conn = DBUtil.getConn();
+            pst = conn.prepareStatement(sql);
+
+            pst.setString(1, user.getUsername());
+            pst.setString(2, user.getPassword());
+            pst.setString(3, user.getRealName());
+            pst.setString(4, user.getSex());
+            pst.setString(5, user.getAddress());
+            pst.setString(6, user.getTel());
+            pst.setString(7, user.getFavorate());
+            pst.setDate(8, user.getRegDate());   // java.sql.Date
+            pst.setInt(9, user.getVip());        // 0/1
+
+            result = pst.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DBUtil.close(null, pst, conn);
+        }
+
+        return result;
+    }
+
+    @Override
+    public int delete(int id) {
+
+        String sql = "DELETE FROM user_info WHERE id = ?";
+
+        Connection conn = null;
+        PreparedStatement pst = null;
+        int result = 0;
+
+        try {
+            conn = DBUtil.getConn();
+            pst = conn.prepareStatement(sql);
+            pst.setInt(1, id);
+
+            result = pst.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DBUtil.close(null, pst, conn);
+        }
+
+        return result;
+    }
+
+
 
 }
