@@ -8,4 +8,5 @@ public interface ProductDao {
    ArrayList<Product> QueryAll();
    Product queryById(int id);
    ArrayList<Product> QueryByName(String name);
+   int add(Product product);
 }

@@ -45,7 +45,7 @@
     </ul>
     <h2><span class="icon-pencil-square-o"></span>商品管理</h2>
     <ul>
-        <li><a href="list.html" target="right"><span class="icon-caret-right"></span>商品管理</a></li>
+        <li><a href="AdminProductServlet?op=queryAll" target="right"><span class="icon-caret-right"></span>商品管理</a></li>
         <li><a href="add.html" target="right"><span class="icon-caret-right"></span>添加商品</a></li>
 
     </ul>

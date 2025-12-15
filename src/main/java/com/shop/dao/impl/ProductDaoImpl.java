@@ -100,4 +100,34 @@ public class ProductDaoImpl implements ProductDao {
         return null;
     }
 
+    @Override
+    public int add(Product product) {
+        int n=0;
+        conn = DBUtil.getConn();
+
+        try {
+            String sql="insert into product_info(code,name,type,brand,pic,num,price,sale,intro,status) values(?,?,?,?,?,?,?,?,?,?)";
+            ps=conn.prepareStatement(sql);
+            ps.setString(1,product.getpCode());
+            ps.setString(2,product.getpName());
+            ps.setString(3,product.getpType());
+            ps.setString(4,product.getpBrand());
+            ps.setString(5,product.getPic());
+            ps.setInt(6,product.getNum());
+            ps.setDouble(7,product.getPrice());
+            ps.setDouble(8,product.getSale());
+            ps.setString(9,product.getIntro());
+            ps.setInt(10,product.getStatus());
+
+            n=ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }finally {
+            DBUtil.close(ps,conn);
+        }
+
+        return n;
+
+    }
+
 }
