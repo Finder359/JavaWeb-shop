@@ -9,4 +9,6 @@ public interface ProductDao {
    Product queryById(int id);
    ArrayList<Product> QueryByName(String name);
    int add(Product product);
+    int delete(int id);
+    int update(Product p);
 }

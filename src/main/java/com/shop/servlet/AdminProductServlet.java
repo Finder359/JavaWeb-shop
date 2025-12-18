@@ -27,6 +27,19 @@ public class AdminProductServlet extends HttpServlet {
         if ("add".equals(op)) {
             addProduct(request, response);
         }
+        if ("delete".equals(op)) {
+            deleteProduct(request, response);
+        }
+        if ("edit".equals(op)) {
+            editProduct(request, response);
+        }
+        if ("update".equals(op)) {
+            try {
+                updateProduct(request, response);
+            } catch (SmartUploadException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
     }
 
@@ -153,5 +166,131 @@ public class AdminProductServlet extends HttpServlet {
             throw new RuntimeException(e);
         }
     }
+
+    private void deleteProduct(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+
+        int id = Integer.parseInt(request.getParameter("id"));
+
+        ProductDao dao = new ProductDaoImpl();
+
+        // 1️⃣ 先查商品（为了拿图片路径）
+        Product p = dao.queryById(id);
+
+        // 2️⃣ 删除数据库记录
+        dao.delete(id);
+
+        // 3️⃣ 删除图片文件（如果有）
+        if (p != null && p.getPic() != null && !"".equals(p.getPic())) {
+
+            // p.getPic() 形如：/upload/xxx.jpg
+            String realPath = getServletContext().getRealPath(p.getPic());
+
+            java.io.File img = new java.io.File(realPath);
+            if (img.exists()) {
+                img.delete();
+            }
+        }
+
+        // 4️⃣ 返回列表
+        response.sendRedirect("AdminProductServlet?op=queryAll");
+    }
+
+    private void editProduct(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        int id = Integer.parseInt(request.getParameter("id"));
+
+        ProductDao dao = new ProductDaoImpl();
+        Product product = dao.queryById(id);
+
+        request.setAttribute("product", product);
+        request.getRequestDispatcher("/admin/editProduct.jsp")
+                .forward(request, response);
+    }
+
+    private void updateProduct(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException, SmartUploadException {
+
+        SmartUpload su = new SmartUpload();
+        su.initialize(getServletConfig(), request, response);
+        su.setCharset("UTF-8");
+        su.setAllowedFilesList("jpg,jpeg,png");
+        su.setMaxFileSize(10 * 1024 * 1024);
+
+        try {
+            su.upload();
+        } catch (SecurityException e) {
+            request.setAttribute("error", "图片格式或大小不符合要求");
+            request.getRequestDispatcher("/admin/editProduct.jsp")
+                    .forward(request, response);
+            return;
+        } catch (SmartUploadException e) {
+            request.setAttribute("error", "上传失败");
+            request.getRequestDispatcher("/admin/editProduct.jsp")
+                    .forward(request, response);
+            return;
+        }
+
+        Request req = su.getRequest();
+
+        int id = Integer.parseInt(req.getParameter("id"));
+        String oldPic = req.getParameter("oldPic");
+
+        Files files = su.getFiles();
+        File file = files.getFile(0);
+
+        String picPath = oldPic; // 默认保留原图
+
+        // 如果用户选择了新图片
+        if (!file.isMissing()) {
+
+            // 删除旧图片
+            if (oldPic != null && !"".equals(oldPic)) {
+                String oldRealPath = getServletContext().getRealPath(oldPic);
+                java.io.File oldFile = new java.io.File(oldRealPath);
+                if (oldFile.exists()) {
+                    oldFile.delete();
+                }
+            }
+
+            // 保存新图片
+            String ext = file.getFileExt();
+            String newName = UUID.randomUUID().toString() + "." + ext;
+            String saveDir = getServletContext().getRealPath("/upload");
+            new java.io.File(saveDir).mkdirs();
+
+            file.saveAs(saveDir + "/" + newName, SmartUpload.SAVE_PHYSICAL);
+            picPath = "/upload/" + newName;
+        }
+
+        // 封装商品
+        Product p = new Product();
+        p.setId(id);
+        p.setpCode(req.getParameter("code"));
+        p.setpName(req.getParameter("name"));
+        p.setpType(req.getParameter("type"));
+        p.setpBrand(req.getParameter("brand"));
+        p.setPic(picPath);
+        p.setNum(Integer.parseInt(req.getParameter("num")));
+        p.setPrice(Double.parseDouble(req.getParameter("price")));
+        p.setSale(Double.parseDouble(req.getParameter("sale")));
+        p.setIntro(req.getParameter("intro"));
+        p.setStatus(Integer.parseInt(req.getParameter("status")));
+
+        ProductDao dao = new ProductDaoImpl();
+        int rows = dao.update(p);
+        System.out.println("update rows = " + rows);
+        if (rows > 0) {
+            response.sendRedirect("success.jsp");
+        } else {
+            request.setAttribute("error", "修改失败，请检查数据");
+            request.getRequestDispatcher("/admin/editProduct.jsp")
+                    .forward(request, response);
+        }
+
+
+    }
+
 
 }

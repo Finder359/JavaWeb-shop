@@ -95,7 +95,7 @@
                     <td><%=product.getNum()%></td>
                     <td><%=product.getPrice()%></td>
                     <td><%=product.getPrice()-product.getSale()%></td>
-                    <td><div class="button-group"> <a class="button border-main" href="add.html"><span class="icon-edit"></span> 修改</a> <a class="button border-red" href="javascript:void(0)" onclick="return del(1,1,1)"><span class="icon-trash-o"></span> 删除</a> </div></td>
+                    <td><div class="button-group"> <a class="button border-main" href="AdminProductServlet?op=edit&id=<%=product.getId()%>"><span class="icon-edit"></span> 修改</a> <a class="button border-red" href="AdminProductServlet?op=delete&id=<%=product.getId()%>" onclick="return del(1,1,1)"><span class="icon-trash-o"></span> 删除</a> </div></td>
                 </tr>
 <%
                             }
@@ -153,7 +153,9 @@
     //单个删除
     function del(id,mid,iscid){
         if(confirm("您确定要删除吗?")){
-
+            return true;
+        }else {
+            return false;
         }
     }
 

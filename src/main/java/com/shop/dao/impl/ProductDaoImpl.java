@@ -130,4 +130,45 @@ public class ProductDaoImpl implements ProductDao {
 
     }
 
+    @Override
+    public int delete(int id) {
+        conn = DBUtil.getConn();
+        String sql = "delete from product_info where id=?";
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            return ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    @Override
+    public int update(Product p) {
+        conn = DBUtil.getConn();
+
+        String sql = "update product_info set code=?,name=?,type=?,brand=?,pic=?,num=?,price=?,sale=?,intro=?,status=? where id=?";
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, p.getpCode());
+            ps.setString(2, p.getpName());
+            ps.setString(3, p.getpType());
+            ps.setString(4, p.getpBrand());
+            ps.setString(5, p.getPic());
+            ps.setInt(6, p.getNum());
+            ps.setDouble(7, p.getPrice());
+            ps.setDouble(8, p.getSale());
+            ps.setString(9, p.getIntro());
+            ps.setInt(10, p.getStatus());
+            ps.setInt(11, p.getId());
+            return ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+
+
 }
