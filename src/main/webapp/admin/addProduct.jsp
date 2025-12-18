@@ -24,7 +24,7 @@
 <div class="panel admin-panel">
     <div class="panel-head" id="add"><strong><span class="icon-pencil-square-o"></span>增加商品</strong></div>
     <div class="body-content">
-        <form method="post" class="form-x" action="">
+        <form method="post" class="form-x" action="AdminProductServlet?op=add" enctype="multipart/form-data">
             <div class="form-group">
                 <div class="label">
                     <label>编码：</label>
@@ -71,6 +71,16 @@
                     <div class="tipss">图片尺寸：500*500</div>
                 </div>
             </div>
+            <%
+                String error = (String) request.getAttribute("error");
+                if (error != null) {
+            %>
+            <div style="color:red; margin-bottom:10px;">
+                <%= error %>
+            </div>
+            <%
+                }
+            %>
 
             <div class="form-group">
                 <div class="label">

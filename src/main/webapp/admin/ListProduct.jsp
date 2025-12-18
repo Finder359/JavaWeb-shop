@@ -79,7 +79,7 @@
                 <th >促销价</th>
                 <th width="280">操作</th>
             </tr>
-            <volist name="list" id="vo">
+
                     <%
          ArrayList<Product> products=(ArrayList<Product>)request.getAttribute("products");
          for(Product product:products){
