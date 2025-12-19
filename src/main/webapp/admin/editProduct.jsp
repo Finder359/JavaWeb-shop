@@ -25,7 +25,7 @@
 </head>
 <body>
 <div class="panel admin-panel">
-    <div class="panel-head" id="add"><strong><span class="icon-pencil-square-o"></span>增加商品</strong></div>
+    <div class="panel-head" id="add"><strong><span class="icon-pencil-square-o"></span>修改商品</strong></div>
     <div class="body-content">
         <form method="post" class="form-x" action="AdminProductServlet?op=update" enctype="multipart/form-data">
             <input type="hidden" name="id" value="<%=product.getId()%>">
@@ -77,8 +77,21 @@
                     <div class="tipss">图片尺寸：500*500</div>
                 </div>
             </div>
-            <img src="<%=product.getPic()%>" width="80">
-            <p>不选择图片则保留原图</p>
+
+            <div style="margin-top:10px; display:flex; align-items:center; gap:10px;">
+                <!-- 图片预览 -->
+                <img src="<%=product.getPic()%>" width="80" style="border:1px solid #ddd; padding:3px;">
+
+                <!-- 下载按钮 -->
+                <a href="<%=product.getPic()%>"
+                   download
+                   class="button button-small bg-blue">
+                    下载图片
+                </a>
+            </div>
+
+            <p style="margin-top:8px;">不选择图片则保留原图</p>
+
             <%
                 String error = (String) request.getAttribute("error");
                 if (error != null) {
