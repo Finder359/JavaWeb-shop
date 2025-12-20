@@ -21,6 +21,9 @@ public class AdminProductServlet extends HttpServlet {
         if ("queryAll".equals(op)){
             doQueryAll(request, response);
         }
+        if ("add".equals(op)){
+            addProduct(request, response);
+        }
 
 
     }
@@ -36,5 +39,9 @@ public class AdminProductServlet extends HttpServlet {
         //查询结果显示到jsp页面
         request.setAttribute("products",products);
         request.getRequestDispatcher("ListProduct.jsp").forward(request,response);
+    }
+
+    protected void addProduct(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+
     }
 }
