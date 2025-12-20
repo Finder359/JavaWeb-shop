@@ -61,7 +61,7 @@
                     </li>
                 </if>
                 <li>
-                    <input type="text" placeholder="请输入搜索关键字" name="keywords" class="input" style="width:250px; line-height:17px;display:inline-block" />
+                    <input type="text" placeholder="请输入搜索关键字" name="keywords" class="input" id="keywords" style="width:250px; line-height:17px;display:inline-block" />
                     <a href="javascript:void(0)" class="button border-main icon-search" onclick="changesearch()" > 搜索</a></li>
             </ul>
         </div>
@@ -180,6 +180,13 @@
 
     //搜索
     function changesearch(){
+        var keywords = document.getElementById("keywords").value;
+
+        // 去掉首尾空格
+        keywords = keywords.trim();
+
+        // 直接跳转到 servlet（带参数）
+        window.location.href = "UserServlet?keywords=" + encodeURIComponent(keywords);
 
     }
 

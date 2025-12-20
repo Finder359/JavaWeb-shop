@@ -49,11 +49,21 @@ public class CartServlet extends HttpServlet {
     private void addToCart(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
+        // =====  登录校验 =====
+        HttpSession session = request.getSession();
+        Object frontUser = session.getAttribute("frontUser");
+        if (frontUser == null) {
+            // 未登录，跳转到登录页
+            response.sendRedirect("login.jsp");
+            return; // 一定要 return，防止继续执行加购逻辑
+        }
+
+
         int id = Integer.parseInt(request.getParameter("id"));
         Product p = dao.queryById(id);
 
         // 购物车结构：Map<Integer, CartItem>
-        HttpSession session = request.getSession();
+        session = request.getSession();
         Map<Integer, CartItem> cart = (Map<Integer, CartItem>) session.getAttribute("cart");
 
         if (cart == null) {
