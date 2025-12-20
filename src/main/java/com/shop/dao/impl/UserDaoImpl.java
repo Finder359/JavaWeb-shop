@@ -220,6 +220,83 @@ public class UserDaoImpl implements UserDao {
         return user;
     }
 
+    @Override
+    public ArrayList<User> queryPageByKeywords(int Cpage, String keywords) {
+
+        ArrayList<User> users = new ArrayList<>();
+        conn = DBUtil.getConn();
+
+        String sql = "select * from admin_info " +
+                "where name like ? or id = ? " +
+                "limit ?,?";
+
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, "%" + keywords + "%");
+
+            // 判断是不是纯数字
+            if (keywords.matches("\\d+")) {
+                ps.setInt(2, Integer.parseInt(keywords));
+            } else {
+                ps.setInt(2, -1); // 不可能存在的 id
+            }
+            ps.setInt(3, (Cpage - 1) * PAGESIZE);
+            ps.setInt(4, PAGESIZE);
+
+            rs = ps.executeQuery();
+
+            // 遍历结果集
+            while (rs.next()) {
+                User user = new User();
+                user.setId(rs.getInt("id"));
+                user.setUsername(rs.getNString("name"));
+                user.setPassword(rs.getNString("pwd"));
+                users.add(user);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            DBUtil.close(rs, ps, conn);
+        }
+
+        return users;
+    }
+
+
+    @Override
+    public int getPageCountByKeywords(String keywords) {
+
+        int count = 0;
+        conn = DBUtil.getConn();
+
+        String sql = "select count(*) from admin_info where name like ? or id = ?";
+
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, "%" + keywords + "%");
+
+            // 判断是不是纯数字
+            if (keywords.matches("\\d+")) {
+                ps.setInt(2, Integer.parseInt(keywords));
+            } else {
+                ps.setInt(2, -1); // 不可能存在的 id
+            }
+
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            DBUtil.close(rs, ps, conn);
+        }
+
+        return (int) Math.ceil(count * 1.0 / PAGESIZE);
+    }
+
 
 
     @Override

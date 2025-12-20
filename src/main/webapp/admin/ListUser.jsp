@@ -61,7 +61,7 @@
                     </li>
                 </if>
                 <li>
-                    <input type="text" placeholder="请输入搜索关键字" name="keywords" class="input" id="keywords" style="width:250px; line-height:17px;display:inline-block" />
+                    <input type="text" placeholder="请输入搜索关键字" name="keywords" class="input" id="keywords" value="<%= request.getAttribute("keywords") == null ? "" : request.getAttribute("keywords") %>" style="width:250px; line-height:17px;display:inline-block" />
                     <a href="javascript:void(0)" class="button border-main icon-search" onclick="changesearch()" > 搜索</a></li>
             </ul>
         </div>
@@ -142,7 +142,7 @@
                             <%
                                 if(current > 1){
                             %>
-                            <a href="UserServlet?op=queryAll&page=<%=current-1%>">上一页</a>
+                            <a href="UserServlet?op=queryAll&page=<%=current-1%><%=request.getAttribute("keywords") == null ? "" : "&keywords=" + request.getAttribute("keywords")%>">上一页</a>
                             <% } else { %>
                             <span class="disabled">上一页</span>
                             <% } %>
@@ -154,7 +154,7 @@
                             %>
                             <span class="current"><%=i%></span>
                             <%  } else { %>
-                            <a href="UserServlet?op=queryAll&page=<%=i%>"><%=i%></a>
+                            <a href="UserServlet?op=queryAll&page=<%=i%><%=request.getAttribute("keywords") == null ? "" : "&keywords=" + request.getAttribute("keywords")%>"><%=i%></a>
                             <%
                                     }
                                 }
@@ -164,7 +164,10 @@
                             <%
                                 if(current < total){
                             %>
-                            <a href="UserServlet?op=queryAll&page=<%=current+1%>">下一页</a>
+                            <a href="UserServlet?op=queryAll&page=<%=current+1%><%=request.getAttribute("keywords") == null ? "" : "&keywords=" + request.getAttribute("keywords")%>">
+                                下一页
+                            </a>
+
                             <% } else { %>
                             <span class="disabled">下一页</span>
                             <% } %>
@@ -186,7 +189,7 @@
         keywords = keywords.trim();
 
         // 直接跳转到 servlet（带参数）
-        window.location.href = "UserServlet?keywords=" + encodeURIComponent(keywords);
+        window.location.href = "UserServlet?op=queryAll&keywords=" + encodeURIComponent(keywords);
 
     }
 

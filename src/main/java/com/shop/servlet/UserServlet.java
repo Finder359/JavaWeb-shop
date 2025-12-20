@@ -116,11 +116,27 @@ public class UserServlet extends HttpServlet {
         String page = request.getParameter("page");
         int currentPage = (page == null ? 1 : Integer.parseInt(page));
 
-        // ② 查询分页数据
-        ArrayList<User> users = userDao.queryPage(currentPage);
+        // ② 搜索关键词
+        String keywords = request.getParameter("keywords");
 
-        // ③ 查询总页数
-        int pageCount = userDao.getPageCount();
+        ArrayList<User> users;
+        int pageCount;
+
+        // ③ 判断是否搜索
+        if (keywords != null && !keywords.trim().equals("")) {
+            keywords = keywords.trim();
+
+            //  模糊搜索 + 分页
+            users = userDao.queryPageByKeywords(currentPage, keywords);
+            pageCount = userDao.getPageCountByKeywords(keywords);
+
+            // 回显关键词
+            request.setAttribute("keywords", keywords);
+        } else {
+            //  普通分页
+            users = userDao.queryPage(currentPage);
+            pageCount = userDao.getPageCount();
+        }
 
         // ④ 回传 JSP
         request.setAttribute("users", users);

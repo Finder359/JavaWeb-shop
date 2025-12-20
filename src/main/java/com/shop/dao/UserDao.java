@@ -15,4 +15,7 @@ public interface UserDao {
     User findById(int id);
     int update(User  user);
     User getUserByName(String username);
+    ArrayList<User> queryPageByKeywords(int currentPage, String keywords);
+    int getPageCountByKeywords(String keywords);
+
 }
