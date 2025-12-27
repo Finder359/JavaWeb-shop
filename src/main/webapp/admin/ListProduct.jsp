@@ -1,11 +1,5 @@
 <%@ page import="java.util.ArrayList" %>
-<%@ page import="com.shop.entity.Product" %><%--
-  Created by IntelliJ IDEA.
-  User: xh
-  Date: 2025/12/15
-  Time: 18:20
-  To change this template use File | Settings | File Templates.
---%>
+<%@ page import="com.shop.entity.Product" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="zh-cn">
@@ -21,7 +15,7 @@
     <script src="js/pintuer.js"></script>
 </head>
 <body>
-<form method="post" action="" id="listform">
+<form method="post" action="AdminProductServlet" id="listform">
     <div class="panel admin-panel">
         <div class="panel-head"><strong class="icon-reorder"> 内容列表</strong> <a href="" style="float:right; display:none;">添加字段</a></div>
         <div class="padding border-bottom">
@@ -61,7 +55,7 @@
                     </li>
                 </if>
                 <li>
-                    <input type="text" placeholder="请输入搜索关键字" name="keywords" class="input" style="width:250px; line-height:17px;display:inline-block" />
+                    <input type="text" placeholder="请输入搜索关键字" name="keywords" class="input" id="keywords" value="<%= request.getAttribute("keywords") == null ? "" : request.getAttribute("keywords") %>" style="width:250px; line-height:17px;display:inline-block" />
                     <a href="javascript:void(0)" class="button border-main icon-search" onclick="changesearch()" > 搜索</a></li>
             </ul>
         </div>
@@ -138,7 +132,32 @@
                         </select></td>
                 </tr>
                 <tr>
-                    <td colspan="8"><div class="pagelist"> <a href="">上一页</a> <span class="current">1</span><a href="">2</a><a href="">3</a><a href="">下一页</a><a href="">尾页</a> </div></td>
+                    <td colspan="8">
+                        <div class="pagelist">
+                            <% int current = (int) request.getAttribute("currentPage");
+                               int total = (int) request.getAttribute("pageCount"); %>
+
+                            <% if(current > 1){ %>
+                            <a href="AdminProductServlet?op=queryAll&page=<%=current-1%><%=request.getAttribute("keywords") == null ? "" : "&keywords=" + request.getAttribute("keywords")%>">上一页</a>
+                            <% } else { %>
+                            <span class="disabled">上一页</span>
+                            <% } %>
+
+                            <% for(int i = 1; i <= total; i++){
+                                   if(i == current){ %>
+                                <span class="current"><%=i%></span>
+                            <%  } else { %>
+                                <a href="AdminProductServlet?op=queryAll&page=<%=i%><%=request.getAttribute("keywords") == null ? "" : "&keywords=" + request.getAttribute("keywords")%>"><%=i%></a>
+                            <%  }
+                               } %>
+
+                            <% if(current < total){ %>
+                            <a href="AdminProductServlet?op=queryAll&page=<%=current+1%><%=request.getAttribute("keywords") == null ? "" : "&keywords=" + request.getAttribute("keywords")%>">下一页</a>
+                            <% } else { %>
+                            <span class="disabled">下一页</span>
+                            <% } %>
+                        </div>
+                    </td>
                 </tr>
         </table>
     </div>
@@ -147,7 +166,9 @@
 
     //搜索
     function changesearch(){
-
+        var keywords = document.getElementById("keywords").value;
+        keywords = keywords.trim();
+        window.location.href = "AdminProductServlet?op=queryAll&keywords=" + encodeURIComponent(keywords);
     }
 
     //单个删除

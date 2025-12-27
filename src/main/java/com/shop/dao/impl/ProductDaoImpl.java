@@ -2,7 +2,6 @@ package com.shop.dao.impl;
 
 import com.shop.dao.ProductDao;
 import com.shop.entity.Product;
-import com.shop.entity.User;
 import com.shop.util.DBUtil;
 
 import java.sql.Connection;
@@ -16,35 +15,19 @@ public class ProductDaoImpl implements ProductDao {
     PreparedStatement ps=null;
     ResultSet rs=null;
 
-
     @Override
     public ArrayList<Product> QueryAll() {
 
         ArrayList<Product> products = new ArrayList<>();
         conn = DBUtil.getConn();
 
-        String sql = "SELECT * FROM product_info"; // ← 按你的表名改
+        String sql = "SELECT * FROM product_info"; // ← table name
         try {
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
 
-            // 遍历结果集
             while (rs.next()) {
-                Product p = new Product();
-
-                p.setId(rs.getInt("id"));
-                p.setpCode(rs.getNString("code"));
-                p.setpName(rs.getNString("name"));
-                p.setpType(rs.getNString("type"));
-                p.setpBrand(rs.getNString("brand"));
-                p.setPic(rs.getNString("pic"));
-                p.setNum(rs.getInt("num"));
-                p.setPrice(rs.getDouble("price"));
-                p.setSale(rs.getDouble("sale"));
-                p.setIntro(rs.getNString("intro"));
-                p.setStatus(rs.getInt("status"));
-
-                products.add(p);
+                products.add(mapRow(rs));
             }
 
         } catch (SQLException e) {
@@ -69,19 +52,7 @@ public class ProductDaoImpl implements ProductDao {
             rs = ps.executeQuery();
 
             if (rs.next()) {
-                p = new Product();
-
-                p.setId(rs.getInt("id"));
-                p.setpCode(rs.getNString("code"));
-                p.setpName(rs.getNString("name"));
-                p.setpType(rs.getNString("type"));
-                p.setpBrand(rs.getNString("brand"));
-                p.setPic(rs.getNString("pic"));
-                p.setNum(rs.getInt("num"));
-                p.setPrice(rs.getDouble("price"));
-                p.setSale(rs.getDouble("sale"));
-                p.setIntro(rs.getNString("intro"));
-                p.setStatus(rs.getInt("status"));
+                p = mapRow(rs);
             }
 
         } catch (SQLException e) {
@@ -97,7 +68,22 @@ public class ProductDaoImpl implements ProductDao {
 
     @Override
     public ArrayList<Product> QueryByName(String name) {
-        return null;
+        ArrayList<Product> list = new ArrayList<>();
+        conn = DBUtil.getConn();
+        String sql = "SELECT * FROM product_info WHERE name LIKE ?";
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, "%" + name + "%");
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(mapRow(rs));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            DBUtil.close(rs, ps, conn);
+        }
+        return list;
     }
 
     @Override
@@ -169,6 +155,112 @@ public class ProductDaoImpl implements ProductDao {
         return 0;
     }
 
+    // ===== pagination =====
+    private static final int PAGE_SIZE = 10;
 
+    @Override
+    public ArrayList<Product> queryPage(int currentPage) {
+        ArrayList<Product> list = new ArrayList<>();
+        conn = DBUtil.getConn();
 
+        String sql = "SELECT * FROM product_info ORDER BY id LIMIT ? OFFSET ?";
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, PAGE_SIZE);
+            ps.setInt(2, (currentPage - 1) * PAGE_SIZE);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(mapRow(rs));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            DBUtil.close(rs, ps, conn);
+        }
+        return list;
+    }
+
+    @Override
+    public int getPageCount() {
+        conn = DBUtil.getConn();
+        String sql = "SELECT COUNT(*) FROM product_info";
+        try {
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                int total = rs.getInt(1);
+                return (int) Math.ceil(total * 1.0 / PAGE_SIZE);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            DBUtil.close(rs, ps, conn);
+        }
+        return 0;
+    }
+
+    @Override
+    public ArrayList<Product> queryPageByKeywords(int currentPage, String keywords) {
+        ArrayList<Product> list = new ArrayList<>();
+        conn = DBUtil.getConn();
+        String like = "%" + keywords + "%";
+        String sql = "SELECT * FROM product_info WHERE name LIKE ? OR brand LIKE ? OR type LIKE ? ORDER BY id LIMIT ? OFFSET ?";
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, like);
+            ps.setString(2, like);
+            ps.setString(3, like);
+            ps.setInt(4, PAGE_SIZE);
+            ps.setInt(5, (currentPage - 1) * PAGE_SIZE);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(mapRow(rs));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            DBUtil.close(rs, ps, conn);
+        }
+        return list;
+    }
+
+    @Override
+    public int getPageCountByKeywords(String keywords) {
+        conn = DBUtil.getConn();
+        String like = "%" + keywords + "%";
+        String sql = "SELECT COUNT(*) FROM product_info WHERE name LIKE ? OR brand LIKE ? OR type LIKE ?";
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, like);
+            ps.setString(2, like);
+            ps.setString(3, like);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                int total = rs.getInt(1);
+                return (int) Math.ceil(total * 1.0 / PAGE_SIZE);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            DBUtil.close(rs, ps, conn);
+        }
+        return 0;
+    }
+
+    // map ResultSet to Product
+    private Product mapRow(ResultSet rs) throws SQLException {
+        Product p = new Product();
+        p.setId(rs.getInt("id"));
+        p.setpCode(rs.getNString("code"));
+        p.setpName(rs.getNString("name"));
+        p.setpType(rs.getNString("type"));
+        p.setpBrand(rs.getNString("brand"));
+        p.setPic(rs.getNString("pic"));
+        p.setNum(rs.getInt("num"));
+        p.setPrice(rs.getDouble("price"));
+        p.setSale(rs.getDouble("sale"));
+        p.setIntro(rs.getNString("intro"));
+        p.setStatus(rs.getInt("status"));
+        return p;
+    }
 }

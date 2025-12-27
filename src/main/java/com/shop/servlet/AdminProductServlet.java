@@ -6,21 +6,21 @@ import com.shop.dao.ProductDao;
 import com.shop.dao.impl.ProductDaoImpl;
 import com.shop.entity.Product;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.UUID;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.UUID;
 
 @WebServlet(name = "AdminProductServlet", value = "/admin/AdminProductServlet")
 public class AdminProductServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-    String op=request.getParameter("op");
+        String op = request.getParameter("op");
         if ("queryAll".equals(op)){
             doQueryAll(request, response);
         }
@@ -45,15 +45,33 @@ public class AdminProductServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-    doGet(request, response);
+        doGet(request, response);
     }
 
     protected void doQueryAll(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         ProductDao productDao = new ProductDaoImpl();
-        ArrayList<Product> products=productDao.QueryAll();
-        //查询结果显示到jsp页面
-        request.setAttribute("products",products);
-        request.getRequestDispatcher("ListProduct.jsp").forward(request,response);
+
+        String page = request.getParameter("page");
+        int currentPage = (page == null ? 1 : Integer.parseInt(page));
+        String keywords = request.getParameter("keywords");
+
+        ArrayList<Product> products;
+        int pageCount;
+
+        if (keywords != null && !keywords.trim().equals("")) {
+            keywords = keywords.trim();
+            products = productDao.queryPageByKeywords(currentPage, keywords);
+            pageCount = productDao.getPageCountByKeywords(keywords);
+            request.setAttribute("keywords", keywords);
+        } else {
+            products = productDao.queryPage(currentPage);
+            pageCount = productDao.getPageCount();
+        }
+
+        request.setAttribute("products", products);
+        request.setAttribute("currentPage", currentPage);
+        request.setAttribute("pageCount", pageCount);
+        request.getRequestDispatcher("ListProduct.jsp").forward(request, response);
     }
 
     private void addProduct(HttpServletRequest request, HttpServletResponse response)

@@ -11,4 +11,12 @@ public interface ProductDao {
    int add(Product product);
     int delete(int id);
     int update(Product p);
+
+    // Pagination for admin list
+    ArrayList<Product> queryPage(int currentPage);
+    int getPageCount();
+
+    // Pagination with keyword search (by name/brand/type)
+    ArrayList<Product> queryPageByKeywords(int currentPage, String keywords);
+    int getPageCountByKeywords(String keywords);
 }
